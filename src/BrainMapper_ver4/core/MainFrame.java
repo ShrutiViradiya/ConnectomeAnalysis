@@ -1,6 +1,8 @@
 package BrainMapper_ver4.core;
 
 import BrainMapper_ver4.core_support.GraphFieldScrollPane;
+import BrainMapper_ver4.info.EastPanel;
+import BrainMapper_ver4.info.WestPanel;
 import BrainMapper_ver4.utils.FileFilterConstructor_Extension_ver2;
 import BrainMapper_ver4.utils.FontProperty;
 import BrainMapper_ver4.utils.WordReplacement;
@@ -32,9 +34,9 @@ import java.io.*;
  */
 
 /**
- * テキストエディタ MindmapNote
+ * テキストエディタ MainFrame
  */
-public class MindmapNote extends JFrame implements Printable {
+public class MainFrame extends JFrame implements Printable {
 
     private JPanel jContentPane = null;
     private JMenuBar jJMenuBar = null;
@@ -82,8 +84,13 @@ public class MindmapNote extends JFrame implements Printable {
     private JMenuItem helpMenuItem = null;
     private JMenuItem aboutMenuItem = null;
     private GraphNode Node = null;
-    private GraphFieldScrollPane jScrollPane = null;
-    private JPanel jPanel = null;
+
+    private JPanel CenterPanel;
+    private GraphFieldScrollPane GraphFieldScrollPane = null;
+    private WestPanel west_panel;
+    private EastPanel east_panel;
+    private JPanel SouthPanel = null;
+
     private JLabel FootLeftLabel = null;
     private JLabel FootRightLabel = null;
 
@@ -108,9 +115,9 @@ public class MindmapNote extends JFrame implements Printable {
      * @param args
      */
     public static void main(String[] args) {
-        MindmapNote frame = (MindmapNote) SaverAndLoader.load(J_FRAME_FILE);
+        MainFrame frame = (MainFrame) SaverAndLoader.load(J_FRAME_FILE);
         if (frame == null) {
-            frame = new MindmapNote();
+            frame = new MainFrame();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         }
         frame.setVisible(true);
@@ -119,14 +126,14 @@ public class MindmapNote extends JFrame implements Printable {
     /**
      * これはデフォルトのコンストラクタです
      */
-    public MindmapNote() {
+    public MainFrame() {
         super();
         initialize();
     }
 
     /**
      * 実質的開始点。
-     * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getMindmapField()
+     * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getGraphField()
      * の順で呼ばれてゆく。
      *
      * @return void
@@ -142,7 +149,7 @@ public class MindmapNote extends JFrame implements Printable {
         }
 
         /*  */
-        this.setContentPane(getJContentPane());//setContentpane() <- getJContentePane() <- getCenterScrollPane <- getMindmapField()
+        this.setContentPane(getJContentPane());//setContentpane() <- getJContentePane() <- getCenterScrollPane <- getGraphField()
         /*  */
 
         this.setJMenuBar(getJJMenuBar());
@@ -154,12 +161,12 @@ public class MindmapNote extends JFrame implements Printable {
                 exit();
             }
         });
-        mmField.selectRootNode();
+        gField.selectRootNode();
     }
 
     /**
      * This method initializes jContentPane
-     * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getMindmapField()
+     * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getGraphField()
      *
      * @return javax.swing.JPanel
      */
@@ -168,19 +175,28 @@ public class MindmapNote extends JFrame implements Printable {
             jContentPane = new JPanel();
             jContentPane.setLayout(new BorderLayout());
 
-            jContentPane.add(getCenterPanel(), BorderLayout.CENTER);//中心パネル領域のはめ込み
-            jContentPane.add(getWestScrollPane(), BorderLayout.LINE_START);//西領域スクロールパネルのはめ込み
-            jContentPane.add(getEastScrollPane(), BorderLayout.EAST);//東領域スクロールパネルのはめ込み
+            //jContentPane.add(getCenterScrollPane(), BorderLayout.CENTER);
+            jContentPane.add(getCenterPanel(), BorderLayout.CENTER);//中心領域パネルのはめ込み
+            jContentPane.add(getWest_panel(), BorderLayout.LINE_START);//西領域パネルのはめ込み
+            jContentPane.add(getEastPanel(), BorderLayout.EAST);//東領域パネルのはめ込み
 
-            jContentPane.add(getCenterScrollPane(), BorderLayout.CENTER);
             jContentPane.add(getSouthJPanel(), BorderLayout.SOUTH);
         }
         return jContentPane;
     }
 
-    JPanel CenterPanel;
 
-/**
+    /**
+     *
+     */
+    private int clickStart_X = 0;
+    private int dragged_distance = 0;
+    private int delta = 0;
+    JScrollPane WestScrollPane, EastScrollPane;
+    JTextArea WestTextArea, EastTextArea;
+
+
+    /**
      * 中心領域パネル
      *
      * @return
@@ -191,22 +207,174 @@ public class MindmapNote extends JFrame implements Printable {
             CenterPanel.setLayout(new BorderLayout());
             CenterPanel.setPreferredSize(new Dimension(400, 600));
 
+            /**
+             * 中心領域の中心に置くパネル
+             */
             CenterPanel.add(getCenterScrollPane(), BorderLayout.CENTER);
+
 
             /**
              * 西リサイズバー
+             * 中心領域の西に配置するパネル
              */
             JPanel WestResizeBar = new JPanel();
-            WestResizeBar.setPreferredSize(new Dimension(2, 600));
+            WestResizeBar.setPreferredSize(new Dimension(4, 600));
             WestResizeBar.setBackground(Color.RED);
             CenterPanel.add(WestResizeBar, BorderLayout.WEST);
-             /**
+            WestResizeBar.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    System.out.println("mousePressed");
+                    clickStart_X = e.getXOnScreen();
+                    System.out.println("set clickStart_X=" + clickStart_X);
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    //System.out.println("MouseEntered");
+                    setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
+                }
+            });
+            WestResizeBar.addMouseMotionListener(new MouseMotionListener() {
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    System.out.println("mouseDragged");
+
+                    //マウス移動量の計算
+                    dragged_distance = (e.getXOnScreen() - clickStart_X);
+                    //パネル移動量の設定
+                    delta = dragged_distance / 2;
+                    System.out.println("delta=" + delta);
+
+                    //西スクロールパネ領域のサイズ設定
+                    //west_panel.setSize(new Dimension(west_panel.getWidth() + delta, west_panel.getHeight()));
+                    //west_panel.setPreferredSize(new Dimension(west_panel.getWidth() + delta, west_panel.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+                    WestScrollPane = west_panel.getWestScrollPane();
+                    WestScrollPane.setSize(new Dimension(WestScrollPane.getWidth() + delta, WestScrollPane.getHeight()));
+                    WestScrollPane.setPreferredSize(new Dimension(WestScrollPane.getWidth() + delta, WestScrollPane.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+                    WestTextArea = west_panel.getWestTextArea();
+                    WestTextArea.setSize(new Dimension(WestScrollPane.getWidth() + delta, WestScrollPane.getHeight()));
+                    WestTextArea.setPreferredSize(new Dimension(WestScrollPane.getWidth() + delta, WestScrollPane.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+
+                    //中心panel領域のサイズ・位置設定
+                    CenterPanel.setSize(new Dimension(CenterPanel.getWidth() - delta, CenterPanel.getHeight()));
+                    CenterPanel.setPreferredSize(new Dimension(CenterPanel.getWidth() - delta, CenterPanel.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+                    GraphFieldScrollPane.setSize(new Dimension(GraphFieldScrollPane.getWidth() - delta, GraphFieldScrollPane.getHeight()));
+                    GraphFieldScrollPane.setPreferredSize(new Dimension(GraphFieldScrollPane.getWidth() - delta, GraphFieldScrollPane.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+                    gField.setSize(new Dimension(gField.getWidth() - delta, gField.getHeight()));
+                    gField.setPreferredSize(new Dimension(gField.getWidth() - delta, gField.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+
+                    CenterPanel.setBounds(CenterPanel.getX() + delta, CenterPanel.getY(), CenterPanel.getWidth(), CenterPanel.getHeight());
+
+                    CenterPanel.revalidate();//repaint()ではダメ
+                    west_panel.revalidate();//repaint()ではダメ
+
+                    clickStart_X = e.getXOnScreen();
+                    System.out.println("set clickStart_X=" + clickStart_X);
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+
+                }
+            });
+
+            /**
              * 東リサイズバー
+             * 中心領域の東に配置するパネル
              */
             JPanel EastResizeBar = new JPanel();
-            EastResizeBar.setPreferredSize(new Dimension(2, 600));
+            EastResizeBar.setPreferredSize(new Dimension(4, 600));
             EastResizeBar.setBackground(Color.BLUE);
             CenterPanel.add(EastResizeBar, BorderLayout.EAST);
+            EastResizeBar.addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    System.out.println("mousePressed");
+                    clickStart_X = e.getXOnScreen();
+                    System.out.println("set clickStart_X=" + clickStart_X);
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    //System.out.println("MouseEntered");
+                    setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
+                }
+            });
+            EastResizeBar.addMouseMotionListener(new MouseMotionListener() {
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                    System.out.println("mouseDragged");
+
+                    //マウス移動量の計算
+                    dragged_distance = (e.getXOnScreen() - clickStart_X);
+                    //パネル移動量の設定
+                    delta = dragged_distance / 2;
+                    System.out.println("delta=" + delta);
+
+                    //東スクロールパネ領域のサイズ設定
+                    //east_panel.setSize(new Dimension(east_panel.getWidth() - delta, east_panel.getHeight()));
+                    //east_panel.setPreferredSize(new Dimension(east_panel.getWidth() - delta, east_panel.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+                    EastScrollPane = east_panel.getEastScrollPane();
+                    EastScrollPane.setSize(new Dimension(EastScrollPane.getWidth() - delta, EastScrollPane.getHeight()));
+                    EastScrollPane.setPreferredSize(new Dimension(EastScrollPane.getWidth() - delta, EastScrollPane.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+                    EastTextArea = east_panel.getEastTextArea();
+                    EastTextArea.setSize(new Dimension(EastTextArea.getWidth() - delta, EastTextArea.getHeight()));
+                    EastTextArea.setPreferredSize(new Dimension(EastTextArea.getWidth() - delta, EastTextArea.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+
+                    //中心panel領域のサイズ・位置設定
+                    CenterPanel.setSize(new Dimension(CenterPanel.getWidth() + delta, CenterPanel.getHeight()));
+                    CenterPanel.setPreferredSize(new Dimension(CenterPanel.getWidth() + delta, CenterPanel.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+                    GraphFieldScrollPane.setSize(new Dimension(GraphFieldScrollPane.getWidth() + delta, GraphFieldScrollPane.getHeight()));
+                    GraphFieldScrollPane.setPreferredSize(new Dimension(GraphFieldScrollPane.getWidth() + delta, GraphFieldScrollPane.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+                    gField.setSize(new Dimension(gField.getWidth() + delta, gField.getHeight()));
+                    gField.setPreferredSize(new Dimension(gField.getWidth() + delta, gField.getHeight()));//これがないとテキスト領域が変更された時もとに戻ってしまう。
+
+                    east_panel.setBounds(EastScrollPane.getX() + delta, EastScrollPane.getY(), EastScrollPane.getWidth(), EastScrollPane.getHeight());
+
+                    CenterPanel.revalidate();//repaint()ではダメ
+                    east_panel.revalidate();//repaint()ではダメ
+
+                    clickStart_X = e.getXOnScreen();
+                    System.out.println("set clickStart_X=" + clickStart_X);
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+
+                }
+            });
+
 
         }
         return CenterPanel;
@@ -214,114 +382,95 @@ public class MindmapNote extends JFrame implements Printable {
 
     /**
      * 中心領域のスクロールパネル
-     * This method initializes jScrollPane
-     *
-     * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getMindmapField()
+     * This method initializes GraphFieldScrollPane
+     * <p>
+     * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getGraphField()
      *
      * @return javax.swing.JScrollPane
      */
     private JScrollPane getCenterScrollPane() {
-        if (jScrollPane == null) {
-            jScrollPane = new GraphFieldScrollPane();//JScrollPane();
+        if (GraphFieldScrollPane == null) {
+            GraphFieldScrollPane = new GraphFieldScrollPane();//JScrollPane();
 
-            mmField = getMindmapField();
-            jScrollPane.setViewportView(mmField);
+            gField = getGraphField();
+            GraphFieldScrollPane.setViewportView(gField);
 
-            int InitialPositionX = (int) (mmField.getPreferredSize().width - jScrollPane.getPreferredSize().width) / 2;
-            int InitialPositionY = (int) (mmField.getPreferredSize().height - jScrollPane.getPreferredSize().height) / 2;
-            jScrollPane.getViewport().setViewPosition(new Point(InitialPositionX, InitialPositionY));
+            int InitialPositionX = (int) (gField.getPreferredSize().width - GraphFieldScrollPane.getPreferredSize().width) / 2;
+            int InitialPositionY = (int) (gField.getPreferredSize().height - GraphFieldScrollPane.getPreferredSize().height) / 2;
+            GraphFieldScrollPane.getViewport().setViewPosition(new Point(InitialPositionX, InitialPositionY));
 
-            jScrollPane.setEnabled(true);
+            GraphFieldScrollPane.setEnabled(true);
         }
-        return jScrollPane;
+        return GraphFieldScrollPane;
     }
 
     /**
-     * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getMindmapField()
+     * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getGraphField()
      */
-    private GraphField mmField;
+    private GraphField gField;
 
-    private GraphField getMindmapField() {
-        System.out.println("---------- getMindmapField() ----------");
-        if (mmField == null) {
-            //mmField = (GraphField) SaverAndLoader.load(MINDMAP_FIELD_FILE);
-            mmField = SaverAndLoader.loadMindmapField(MINDMAP_FIELD_FILE, MINDMAP_NODE_LIST);
-            if (mmField == null) {
+    private GraphField getGraphField() {
+        System.out.println("---------- getGraphField() ----------");
+        if (gField == null) {
+            //gField = (GraphField) SaverAndLoader.load(MINDMAP_FIELD_FILE);
+            gField = SaverAndLoader.loadMindmapField(this, MINDMAP_FIELD_FILE, MINDMAP_NODE_LIST);
+            if (gField == null) {
                 System.out.println("MindmapFieldのロードに失敗しました");
-                mmField = new GraphField();//
-                mmField.setFont(DEFAULT_FONT);
+                gField = new GraphField(this);//
+                gField.setFont(DEFAULT_FONT);
             }
-            mmField.setMindmapNote(this);//MindmapNoteが保持する各種コンポーネントへのアクセスを確保するため
+            gField.setMindmapNote(this);//MindmapNoteが保持する各種コンポーネントへのアクセスを確保するため
 
             /**
              * ActionMap, InputMapへの登録
              */
-            InputMap inputMap = mmField.getInputMap();
-            ActionMap actionMap = mmField.getActionMap();
+            InputMap inputMap = gField.getInputMap();
+            ActionMap actionMap = gField.getActionMap();
 
             inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, MASK), "ノードの挿入");
-            actionMap.put("ノードの挿入", new AddNewNodeAction(mmField));
+            actionMap.put("ノードの挿入", new AddNewNodeAction(gField));
         }
 
-        return mmField;
+        return gField;
     }
 
 
     /**
-     * 西領域のスクロールパネル
+     * 西領域のパネル
      */
-    private JScrollPane WestScrollPane;
-    private JTextArea WestTextArea;
-
-    private JScrollPane getWestScrollPane() {
-        if (WestScrollPane == null) {
-            WestScrollPane = new JScrollPane();
-
-            WestTextArea = new JTextArea("西領域");
-            WestScrollPane.setViewportView(WestTextArea);
-            WestScrollPane
-                    .setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            WestScrollPane.setEnabled(true);
-            WestScrollPane.setPreferredSize(new Dimension(400, 600));
-            //WestScrollPane.setViewportView(new JTextArea());
+    public WestPanel getWest_panel() {
+        if (west_panel == null) {
+            west_panel = new WestPanel(gField);
         }
-
-        return WestScrollPane;
+        return west_panel;
     }
 
     /**
-     * 東領域のスクロールパネル
+     * 東領域のパネル
      */
-    private JScrollPane EastScrollPane;
-
-    private JScrollPane getEastScrollPane() {
-        if (EastScrollPane == null) {
-            EastScrollPane = new JScrollPane();
-            EastScrollPane.setViewportView(new JTextArea("東領域"));
-            EastScrollPane
-                    .setHorizontalScrollBarPolicy(javax.swing.JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-            EastScrollPane.setEnabled(true);
-            EastScrollPane.setPreferredSize(new Dimension(400, 600));
-            //WestScrollPane.setViewportView(new JTextArea());
+    private EastPanel getEastPanel() {
+        if (east_panel == null) {
+            east_panel = new EastPanel(gField);
         }
-        return EastScrollPane;
+        return east_panel;
     }
 
 
     /**
-     * This method initializes jPanel
+     * 南領域パネル
+     * This method initializes SouthPanel
      *
      * @return javax.swing.JPanel
      */
     private JPanel getSouthJPanel() {
-        if (jPanel == null) {
-            jPanel = new JPanel();
-            jPanel.setBackground(Color.MAGENTA);
-            jPanel.setLayout(new BorderLayout());
-            jPanel.add(getFootLeftLabel(), BorderLayout.CENTER);
-            jPanel.add(getFootRightLabel(), BorderLayout.EAST);
+        if (SouthPanel == null) {
+            SouthPanel = new JPanel();
+            SouthPanel.setBackground(Color.MAGENTA);
+            SouthPanel.setLayout(new BorderLayout());
+            SouthPanel.add(getFootLeftLabel(), BorderLayout.CENTER);
+            SouthPanel.add(getFootRightLabel(), BorderLayout.EAST);
         }
-        return jPanel;
+        return SouthPanel;
     }
 
 
@@ -336,8 +485,8 @@ public class MindmapNote extends JFrame implements Printable {
             setVisible(false);
             //GraphNode.setText("");
             setThisTitle();
-            SaverAndLoader.saveNodes(mmField.getNodeList(), mmField.getEdgeList(), MINDMAP_NODE_LIST);
-            //SaverAndLoader.saveMindmapField(mmField, MINDMAP_FIELD_FILE);
+            SaverAndLoader.saveNodes(gField.getNodeList(), gField.getEdgeList(), MINDMAP_NODE_LIST);
+            //SaverAndLoader.saveMindmapField(gField, MINDMAP_FIELD_FILE);
             //SaverAndLoader.save(this, J_FRAME_FILE);
             //System.out.println("おわり");
             System.exit(0);
@@ -345,6 +494,7 @@ public class MindmapNote extends JFrame implements Printable {
     }
 
     /**
+     * メニューバー関連
      * This method initializes jJMenuBar
      *
      * @return javax.swing.JMenuBar

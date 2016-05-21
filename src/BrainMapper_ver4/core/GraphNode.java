@@ -1,8 +1,8 @@
 package BrainMapper_ver4.core;
 
 
-import BrainMapper_ver4.core_support.GraphElement;
 import BrainMapper_ver4.core_support.GraphEdgeList;
+import BrainMapper_ver4.core_support.GraphElement;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -15,7 +15,7 @@ import java.awt.event.*;
  */
 public class GraphNode extends GraphElement {
 
-    GraphField mmField;
+    GraphField gField;
     JTextArea textarea;
 
     protected double ViewPortW;
@@ -62,7 +62,7 @@ public class GraphNode extends GraphElement {
     }
 
     public void setBelongingGraphField(GraphField field) {
-        this.mmField = field;
+        this.gField = field;
     }
 
     public JTextArea getTextarea() {
@@ -156,9 +156,12 @@ public class GraphNode extends GraphElement {
         @Override
         public void mouseEntered(MouseEvent e) {
             //System.out.println("mouseEntered@TextAreaMouseActionHandler");
-            mmField.setSelectedNode(GraphNode.this);//選択ノードに設定する
-            mmField.setAsDescribeTarget(GraphNode.this);
-
+            gField.setSelectedNode(GraphNode.this);//選択ノードに設定する
+            if (main_frame == null) {
+                System.out.println("main_frameがnull");
+            } else {
+                main_frame.getWest_panel().setTextToTextArea(GraphNode.this.getElementID());
+            }
         }
 
         @Override

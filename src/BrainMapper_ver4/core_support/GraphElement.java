@@ -1,6 +1,6 @@
 package BrainMapper_ver4.core_support;
 
-import BrainMapper_ver4.core.MindmapNote;
+import BrainMapper_ver4.core.MainFrame;
 
 import javax.swing.*;
 import java.util.Calendar;
@@ -9,7 +9,7 @@ import java.util.Calendar;
  * Created by issey on 2016/05/21.
  */
 public class GraphElement extends JPanel {
-    public MindmapNote mmNote;
+    public MainFrame main_frame;
     public String ElementID = "";
     public int positionX;
     public int positionY;
@@ -18,12 +18,12 @@ public class GraphElement extends JPanel {
     public int Width;
     public int Height;
 
-    public MindmapNote getMmNote() {
-        return mmNote;
+    public MainFrame getMain_frame() {
+        return main_frame;
     }
 
-    public void setBelongingMindmapNote(MindmapNote mmNote) {
-        this.mmNote = mmNote;
+    public void setBelongingMainFrame(MainFrame main_frame) {
+        this.main_frame = main_frame;
     }
 
     public String getElementID() {

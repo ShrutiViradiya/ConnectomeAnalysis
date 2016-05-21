@@ -39,12 +39,12 @@ public class GraphEdge extends GraphElement {
         this.destNode.addToDestEdgeList(this);//逆に終点ノードにこのエッジを登録する。
         setDrawPosition();
         this.ElementID = elementID;
-        this.textarea = new JTextArea("");
+        this.textarea = new JTextArea("edge");
+        add(textarea);
 
         //setBackground(Color.GREEN);
         setOpaque(false);
 
-        //add(textarea);
     }
 
     /**
@@ -69,13 +69,13 @@ public class GraphEdge extends GraphElement {
     double arrow_head_3_x, arrow_head_3_y;
 
     public void setDrawPosition() {
-        System.out.println("------ GraphEdge#setDrawPosition() -------");
-        System.out.println("srcNode.getElementID()=" + srcNode.getElementID());
-        System.out.println("srcNode.getCenterX()=" + srcNode.getCenterX());
-        System.out.println("srcNode.getCenterY()=" + srcNode.getCenterY());
-        System.out.println("destNode.getElementID()=" + destNode.getElementID());
-        System.out.println("destNode.getCenterX()=" + destNode.getCenterX());
-        System.out.println("destNode.getCenterY()=" + destNode.getCenterY());
+        //System.out.println("------ GraphEdge#setDrawPosition() -------");
+        //System.out.println("srcNode.getElementID()=" + srcNode.getElementID());
+        //System.out.println("srcNode.getCenterX()=" + srcNode.getCenterX());
+        //System.out.println("srcNode.getCenterY()=" + srcNode.getCenterY());
+        //System.out.println("destNode.getElementID()=" + destNode.getElementID());
+        //System.out.println("destNode.getCenterX()=" + destNode.getCenterX());
+        //System.out.println("destNode.getCenterY()=" + destNode.getCenterY());
 
         //destNodeの中心とsrcNodeの中心と結ぶ線と水平線のなす角
         double radian1 = Math.atan2(destNode.getCenterY() - srcNode.getCenterY(), destNode.getCenterX() - srcNode.getCenterX());
@@ -96,12 +96,12 @@ public class GraphEdge extends GraphElement {
                 edge_panel_height = destNode.getCenterY() - srcNode.getCenterY();
 
                 if (radian1 > radian2) {//上縁に交点
-                    System.out.println("■左上に起点Node→右下に終点Node、上縁に交点");
+                    //System.out.println("■左上に起点Node→右下に終点Node、上縁に交点");
                     //矢印の第１頂点をarrow_head_1とする。destNodeの縁とEdgeとの交点。
                     arrow_head_1_x = edge_panel_width - (destNode.getHeight() / 2) / Math.tan(radian1);
                     arrow_head_1_y = edge_panel_height - destNode.getHeight() / 2;
                 } else {//左縁に交点
-                    System.out.println("■左上に起点Node→右下に終点Node、左縁に交点");
+                    //System.out.println("■左上に起点Node→右下に終点Node、左縁に交点");
                     //destNodeの縁とEdgeとの交点をarrow_head1とする。
                     arrow_head_1_x = edge_panel_width - destNode.getWidth() / 2;
                     arrow_head_1_y = edge_panel_height - (destNode.getWidth() / 2) * Math.tan(radian1);
@@ -113,12 +113,12 @@ public class GraphEdge extends GraphElement {
                 edge_panel_height = srcNode.getCenterY() - destNode.getCenterY();
 
                 if (radian1 > radian4) {//左縁に交点
-                    System.out.println("■左下に起点Node→右上に終点Node、左縁に交点");
+                    //System.out.println("■左下に起点Node→右上に終点Node、左縁に交点");
                     //destNodeの縁とEdgeとの交点をarrow_head1とする。
                     arrow_head_1_x = edge_panel_width - destNode.getWidth() / 2;
                     arrow_head_1_y = (destNode.getWidth() / 2) * Math.tan(2 * Math.PI - radian1);
                 } else {//下縁に交点
-                    System.out.println("■左下に起点Node→右上に終点Node、下縁に交点");
+                    //System.out.println("■左下に起点Node→右上に終点Node、下縁に交点");
                     //destNodeの縁とEdgeとの交点をarrow_head1とする。
                     arrow_head_1_x = edge_panel_width - (destNode.getHeight() / 2) / Math.tan(2 * Math.PI - radian1);
                     arrow_head_1_y = destNode.getHeight() / 2;
@@ -133,12 +133,12 @@ public class GraphEdge extends GraphElement {
                 edge_panel_height = destNode.getCenterY() - srcNode.getCenterY();
 
                 if (radian1 > radian3) {//右縁に交点
-                    System.out.println("■右上に起点Node→左下に終点Node、右縁に交点");
+                    //System.out.println("■右上に起点Node→左下に終点Node、右縁に交点");
                     //destNodeの縁とEdgeとの交点をarrow_head1とする。
                     arrow_head_1_x = destNode.getWidth() / 2;
                     arrow_head_1_y = edge_panel_height - (destNode.getWidth() / 2) * Math.tan(Math.PI - radian1);
                 } else {//上縁に交点
-                    System.out.println("■右上に起点Node→左下に終点Node、上縁に交点");
+                    //System.out.println("■右上に起点Node→左下に終点Node、上縁に交点");
                     //destNodeの縁とEdgeとの交点をarrow_head1とする。
                     arrow_head_1_x = (destNode.getHeight() / 2) / Math.tan(Math.PI - radian1);
                     arrow_head_1_y = edge_panel_height - destNode.getHeight() / 2;
@@ -150,12 +150,12 @@ public class GraphEdge extends GraphElement {
                 edge_panel_height = srcNode.getCenterY() - destNode.getCenterY();
 
                 if (radian1 < radian5) {//右縁に交点
-                    System.out.println("■右下に起点Node→左上に終点Node、右縁に交点");
+                    //System.out.println("■右下に起点Node→左上に終点Node、右縁に交点");
                     //destNodeの縁とEdgeとの交点をarrow_head1とする。
                     arrow_head_1_x = destNode.getWidth() / 2;
                     arrow_head_1_y = (destNode.getWidth() / 2) * Math.tan(radian1 - Math.PI);
                 } else {//下縁に交点
-                    System.out.println("■右下に起点Node→左上に終点Node、下縁に交点");
+                    //System.out.println("■右下に起点Node→左上に終点Node、下縁に交点");
                     //destNodeの縁とEdgeとの交点をarrow_head1とする。
                     arrow_head_1_x = (destNode.getHeight() / 2) / Math.tan(radian1 - Math.PI);
                     arrow_head_1_y = destNode.getHeight() / 2;
@@ -182,41 +182,41 @@ public class GraphEdge extends GraphElement {
         line_start_Y = srcNode.getCenterY() - edge_panel_y;
         line_end_X = arrow_head_1_x;
         line_end_Y = arrow_head_1_y;
-        System.out.println("edge_panel_x = " + edge_panel_x);
-        System.out.println("edge_panel_y = " + edge_panel_y);
-        System.out.println("line_end_X = " + line_end_X);
-        System.out.println("line_end_Y = " + line_end_Y);
+        //System.out.println("edge_panel_x = " + edge_panel_x);
+        //System.out.println("edge_panel_y = " + edge_panel_y);
+        //System.out.println("line_end_X = " + line_end_X);
+        //System.out.println("line_end_Y = " + line_end_Y);
 
         //矢印描画の為に使った角度の確認表示
         double degree1 = radian1 * 180d / Math.PI;
-        System.out.println("degree1=" + degree1);
+        //System.out.println("degree1=" + degree1);
         double degree2 = radian2 * 180d / Math.PI;
-        System.out.println("degree2=" + degree2);
+        //System.out.println("degree2=" + degree2);
         double degree3 = radian1 * 180d / Math.PI;
-        System.out.println("degree3=" + degree3);
+        //System.out.println("degree3=" + degree3);
         double degree4 = radian2 * 180d / Math.PI;
-        System.out.println("degree4=" + degree4);
+        //System.out.println("degree4=" + degree4);
         double degree5 = radian1 * 180d / Math.PI;
-        System.out.println("degree5=" + degree5);
+        //System.out.println("degree5=" + degree5);
 
         //矢印の第1頂点
-        System.out.println("arrow_head_1=(" + arrow_head_1_x + ", " + arrow_head_1_y + ")");
+        //System.out.println("arrow_head_1=(" + arrow_head_1_x + ", " + arrow_head_1_y + ")");
         //矢印の第2頂点
         arrow_head_2_x = arrow_head_1_x - 10 * Math.cos(25 * Math.PI / 180 + radian1);
         arrow_head_2_y = arrow_head_1_y - 10 * Math.sin(25 * Math.PI / 180 + radian1);
-        System.out.println("arrow_head_2=(" + arrow_head_2_x + ", " + arrow_head_2_y + ")");
+        //System.out.println("arrow_head_2=(" + arrow_head_2_x + ", " + arrow_head_2_y + ")");
         //矢印の第3頂点
         arrow_head_3_x = arrow_head_1_x - 10 * Math.cos(-25 * Math.PI / 180 + radian1);
         arrow_head_3_y = arrow_head_1_y - 10 * Math.sin(-25 * Math.PI / 180 + radian1);
-        System.out.println("arrow_head_3=(" + arrow_head_3_x + ", " + arrow_head_3_y + ")");
+        //System.out.println("arrow_head_3=(" + arrow_head_3_x + ", " + arrow_head_3_y + ")");
 
         //EdgePanelの位置・大きさ指定
         setBounds((int) edge_panel_x, (int) edge_panel_y, (int) edge_panel_width, (int) edge_panel_height);
         if (mmField != null) {
             mmField.setComponentZOrder(this, mmField.getComponentCount() - 1);//最背面へ
-            //mmField.setComponentZOrder(this, 0);//最前面へ
+            //gField.setComponentZOrder(this, 0);//最前面へ
         }
-        //System.out.println("@setDrawingPosition: " + (int) edge_panel_x + ", " + (int) edge_panel_y + ":" + (int) edge_panel_width + "x" + (int) edge_panel_height);
+        ////System.out.println("@setDrawingPosition: " + (int) edge_panel_x + ", " + (int) edge_panel_y + ":" + (int) edge_panel_width + "x" + (int) edge_panel_height);
     }
 
     public JTextArea getTextarea() {

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 /**
  * Created by issey on 2016/02/13.
- * MindmapNote.java は NogNote.java を真似て書いているのに合わせて、
+ * MainFrame.java は NogNote.java を真似て書いているのに合わせて、
  * この GraphField.java は JTextAreaの骨格を真似て作り始めている。
  * ただし、スーパークラスはJPanelであって欲しいので
  */
@@ -26,7 +26,7 @@ public class GraphField extends GraphElement {
     GraphEdgeList EdgeList = new GraphEdgeList();
     GraphNode selectedNode;//選択中のノード
     GraphNode anchoredNode;//アンカーをかける（バックグラウンドで選択する）ノード。
-    MindmapNote mmNote;//MindmapNoteが保持する各種コンポーネントへのアクセスを確保するため
+    MainFrame main_frame;//MindmapNoteが保持する各種コンポーネントへのアクセスを確保するため
 
     GraphNode root;
     GraphNode first;
@@ -38,11 +38,14 @@ public class GraphField extends GraphElement {
     /**
      * コンストラクタ
      */
-    public GraphField() {
-        System.out.println("---------- GraphField ----------");
+    public GraphField(MainFrame main_frame) {
+        System.out.println("---------- Constructor of GraphField ----------");
+        this.main_frame = main_frame;
+
         setPreferredSize(new Dimension(4000, 2400));
-        setBackground(Color.PINK);
+        setBackground(Color.DARK_GRAY);
         setLayout(null);
+
 
 /*
         if (NodeList.size() == 0) {
@@ -68,6 +71,7 @@ public class GraphField extends GraphElement {
          */
         addKeyListener(new KeyActionHandler());
         setFocusable(true);
+
         //addMouseListener(new MouseActionHandler());
         //addMouseMotionListener(new MouseActionHandler());
 
@@ -105,6 +109,7 @@ public class GraphField extends GraphElement {
     public GraphNode createNewNode(int x, int y, String value) {
         GraphNode NewNode = new GraphNode(value);//新たなノードオブジェクトの生成
         NewNode.setBelongingGraphField(this);//所属するGraphFieldを登録
+        NewNode.setBelongingMainFrame(main_frame);
         this.NodeList.add(NewNode);//GraphFieldオブジェクトが持つNodeListにも登録
         this.add(NewNode);//Swingのコンポーネントとしても追加
         NewNode.setBounds(x, y, 100, 100);
@@ -143,6 +148,7 @@ public class GraphField extends GraphElement {
         } else {//既に指定された起点、終点を持つエッジがないならば新たなEdgeを作る。
             GraphEdge NewEdge = new GraphEdge(srcNode, destNode);
             NewEdge.setBelongingGraphField(this);
+            NewEdge.setBelongingMainFrame(main_frame);
             this.EdgeList.add(NewEdge);
             this.add(NewEdge);
             NewEdge.setDrawPosition();
@@ -186,6 +192,7 @@ public class GraphField extends GraphElement {
         this.NodeList = NodeList;
         for (GraphNode node : NodeList) {
             node.setBelongingGraphField(this);
+            node.setBelongingMainFrame(main_frame);
         }
     }
 
@@ -198,11 +205,12 @@ public class GraphField extends GraphElement {
         this.EdgeList = EdgeList;
         for (GraphEdge edge : EdgeList) {
             edge.setBelongingGraphField(this);
+            edge.setBelongingMainFrame(main_frame);
         }
     }
 
-    public void setMindmapNote(MindmapNote mmNote) {
-        this.mmNote = mmNote;
+    public void setMindmapNote(MainFrame mmNote) {
+        this.main_frame = mmNote;
     }
 
     public GraphNode getRootNode() {
@@ -230,7 +238,7 @@ public class GraphField extends GraphElement {
             }
         }
         this.selectedNode = node;
-        mmNote.setFootRightLbelText(selectedNode.getElementID());
+        main_frame.setFootRightLbelText(selectedNode.getElementID());
         selectedNode.getTextarea().setBorder(selectedNode.ActiveBorder);
     }
 
@@ -266,26 +274,6 @@ public class GraphField extends GraphElement {
         return this.selectedNode;
     }
 
-    public void setAsDescribeTarget(GraphNode node) {
-        //既に選択されているNodeに対して、Diactivate処理
-        //System.out.println("何か選択されていたり、新たに選択されたNodeが既に選択中でないなら");
-        //System.out.println("既に選択中のNodeのアクティブ枠を消す");
-        if (this.selectedNode != null) {
-            if (this.selectedNode != node) {
-                this.selectedNode.changeBorder(1);
-            }
-            if (this.selectedNode != node && this.selectedNode.getTextarea().isEnabled()) {
-                //新たに選択されようとしているノードが、既に登録されているノードではなく
-                //既に登録されているノードが編集状態になっている時
-                //ディアクティベート処理
-                this.selectedNode.getTextarea().setCaretPosition(0);
-                this.selectedNode.getTextarea().setEnabled(false);
-            }
-        }
-        this.selectedNode = node;
-        mmNote.setFootRightLbelText(selectedNode.getElementID());
-        selectedNode.getTextarea().setBorder(selectedNode.ActiveBorder);
-    }
 
     private class KeyActionHandler implements KeyListener {
 
@@ -296,7 +284,7 @@ public class GraphField extends GraphElement {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            //System.out.println("KeyPressed@GraphField");
+            System.out.println("KeyPressed@GraphField");
             //System.out.println("Selected Node ID: " + selectedNode.getElementID());
             int modifier = e.getModifiersEx();
             int keycode = e.getKeyCode();
@@ -316,7 +304,7 @@ public class GraphField extends GraphElement {
                 System.out.println("ノードの削除");
                 if (selectedNode != null) {
                     deleteNode(selectedNode);
-                    mmNote.setFootRightLbelText("Node [" + selectedNode.getElementID() + "] has been deleted.");
+                    main_frame.setFootRightLbelText("Node [" + selectedNode.getElementID() + "] has been deleted.");
                     selectedNode = null;
                 }
                 GraphField.this.repaint();

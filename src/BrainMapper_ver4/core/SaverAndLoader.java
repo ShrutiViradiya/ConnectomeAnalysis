@@ -50,13 +50,13 @@ public class SaverAndLoader {
         return container;
     }
 
-    static GraphField loadMindmapField(String MindmapFieldDataFilePath, String NodeListFilePath) {
+    static GraphField loadMindmapField(MainFrame main_frame, String MindmapFieldDataFilePath, String NodeListFilePath) {
         System.out.println("---------- Start: loadMindmapField ----------");
         //MindmapFieldDataFileのロード
         GraphField mmField = null;
         File MindmapFieldDataFile = new File(SaveFolder + "/" + MindmapFieldDataFilePath);
-        mmField = new GraphField();
-        mmField.setFont(MindmapNote.DEFAULT_FONT);
+        mmField = new GraphField(main_frame);
+        mmField.setFont(MainFrame.DEFAULT_FONT);
 
         File NodeListFile = new File(SaveFolder + "/" + NodeListFilePath);
         Document DomDocument = null;
