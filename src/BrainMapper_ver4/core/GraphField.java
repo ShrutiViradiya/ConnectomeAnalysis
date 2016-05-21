@@ -126,11 +126,11 @@ public class GraphField extends GraphElement {
 
     public void deleteNode(GraphNode node) {
         //まず削除対象ノードに登録されているエッジを消す
-        for (GraphEdge edge : node.getSrcEdgeList()) {
+        for (GraphEdge edge : node.getOutoingEdgeList()) {
             this.remove(edge);//Swingコンポーネントとしての存在を消す
             this.EdgeList.remove(edge);//GraphField上の登録リストから消す
         }
-        for (GraphEdge edge : node.getDestEdgeList()) {
+        for (GraphEdge edge : node.getEnteringEdgeList()) {
             this.remove(edge);//Swingコンポーネントとしての存在を消す
             this.EdgeList.remove(edge);//GraphField上の登録リストから消す
         }
@@ -163,9 +163,9 @@ public class GraphField extends GraphElement {
         if (ExistingEdge != null) {//既に指定された起点、終点を持つエッジがあるなら既存のEdgeを返す
 
             //SrcNodeの登録から消す
-            srcNode.getSrcEdgeList().remove(ExistingEdge);
+            srcNode.getOutoingEdgeList().remove(ExistingEdge);
             //DestNodeの登録から消す
-            destNode.getDestEdgeList().remove(ExistingEdge);
+            destNode.getEnteringEdgeList().remove(ExistingEdge);
             //GraphFieldの登録から消す
             this.EdgeList.remove(ExistingEdge);
             //GraphFieldのJComponentとしての存在を消す。

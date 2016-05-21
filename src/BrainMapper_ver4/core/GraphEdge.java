@@ -4,6 +4,9 @@ import BrainMapper_ver4.core_support.GraphElement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
@@ -40,12 +43,16 @@ public class GraphEdge extends GraphElement {
         this.destNode.addToDestEdgeList(this);//逆に終点ノードにこのエッジを登録する。
         setDrawPosition();
         this.ElementID = elementID;
+
+        this.setLayout(null);
         this.textarea = new JTextArea("edge");
+        add(textarea);
 
-        //add(textarea);
+        setBackground(Color.PINK);
+        //setOpaque(false);
 
-        //setBackground(Color.GREEN);
-        setOpaque(false);
+        //this.addMouseListener(new PanelAreaMouseActionHandler());
+        //this.addMouseMotionListener(new PanelAreaMouseActionHandler());
 
     }
 
@@ -220,8 +227,12 @@ public class GraphEdge extends GraphElement {
         }
 
         //説明テキストの位置設定
-        text_x = this.getWidth() /2;
-        text_y = this.getHeight() /2;
+        text_x = this.getWidth() / 2;
+        text_y = this.getHeight() / 2;
+
+        if(textarea!=null) {
+            textarea.setBounds((int) text_x, (int) text_y, textarea.getWidth(), textarea.getHeight());
+        }
 
         ////System.out.println("@setDrawingPosition: " + (int) edge_panel_x + ", " + (int) edge_panel_y + ":" + (int) edge_panel_width + "x" + (int) edge_panel_height);
     }
@@ -246,7 +257,7 @@ public class GraphEdge extends GraphElement {
 
         //色の指定
         Graphics2D g2 = (Graphics2D) g;
-        g2.setPaint(Color.BLUE);
+        g2.setPaint(Color.GREEN);
 
         //線の太さの指定
         BasicStroke wideStroke = new BasicStroke(2.0f);
@@ -277,7 +288,7 @@ public class GraphEdge extends GraphElement {
         //double x2 = (line_end_X - line_start_X) * 2 / 6;
         //double x3 = edge_panel_width * 1 / 2;
         //double y3 = (line_end_Y - line_start_Y) * 2 / 6;
-        double x3 = edge_panel_width/2;
+        double x3 = edge_panel_width / 2;
         //double y3 = edge_panel_height * 1 / 2;
         double y3 = edge_panel_height;
         gp.curveTo(x2, y2, x3, y3, line_end_X, line_end_Y);
@@ -291,11 +302,14 @@ public class GraphEdge extends GraphElement {
         }
 
         //説明テキストを描く
-        g2.setPaint(Color.YELLOW);// 色の指定
-        g2.setStroke(new BasicStroke(1.0f));//線の太さの指定
-        g2.drawString(textarea.getText(), (int)text_x, (int)text_y);
-        //g2.drawString(textarea.getText(), (int)text_x, (int)y2);
+        //g2.setPaint(Color.YELLOW);// 色の指定
+        //g2.setStroke(new BasicStroke(1.0f));//線の太さの指定
+        //g2.drawString(textarea.getText(), (int) text_x, (int) text_y);
+
+
     }
+
+
 
     /**
      * Nodeの表示サイズの最適化
@@ -307,6 +321,43 @@ public class GraphEdge extends GraphElement {
         int newHeight = fMetrics.getHeight();
         textarea.setSize(newWidth + 5, newHeight + 5);
         this.setSize(newWidth + 20, newHeight + 20);
+    }
+
+    /**
+     * PanelAreaMouseActionHandler
+     * -----------------------------------
+     */
+    private class PanelAreaMouseActionHandler implements MouseListener, MouseMotionListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            System.out.println("mouseClicked!@GraphEdge");
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+
+
+        @Override
+        public void mouseMoved(MouseEvent e) {
+        }
     }
 
 }

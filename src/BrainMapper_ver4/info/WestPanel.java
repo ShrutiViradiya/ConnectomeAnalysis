@@ -1,5 +1,9 @@
 package BrainMapper_ver4.info;
 
+import BrainMapper_ver4.core.GraphEdge;
+import BrainMapper_ver4.core.GraphNode;
+import BrainMapper_ver4.core_support.GraphEdgeList;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -94,8 +98,26 @@ public class WestPanel extends JPanel {
     /**
      * 解析メソッド
      */
-    public void showAllNodeInfo() {
+    public void showAllNodeInfo(GraphNode node) {
+        String all_info = "";
+        all_info = "<About this node>\n";
+        all_info += node.getElementID() + "\n";
+        all_info += node.getTextarea().getText() + "\n";
 
+        all_info += "\n";
+
+        all_info += "<About Outgoing Edges>\n";
+        GraphEdgeList OutgoingEdges = node.getOutoingEdgeList();
+        for (GraphEdge edge : OutgoingEdges) {
+            all_info += edge.getElementID() + "\n";
+        }
+        all_info += "<About Entering Edges>\n";
+        GraphEdgeList EnteringEdges = node.getEnteringEdgeList();
+        for (GraphEdge edge : EnteringEdges) {
+            all_info += edge.getElementID() + "\n";
+        }
+
+        WestTextArea.setText(all_info);
     }
 
 

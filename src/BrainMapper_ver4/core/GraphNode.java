@@ -29,8 +29,8 @@ public class GraphNode extends GraphElement {
     protected double DraggedTimingViewPortX, DraggedTimingViewPortY;
     protected double ClickedTimingViewPortX, ClickedTimingViewPortY;
 
-    GraphEdgeList SrcEdgeList = new GraphEdgeList();
-    GraphEdgeList DestEdgeList = new GraphEdgeList();
+    GraphEdgeList EnteringEdgeList = new GraphEdgeList();
+    GraphEdgeList OutgoingEdgeList = new GraphEdgeList();
 
 
     /**
@@ -70,24 +70,25 @@ public class GraphNode extends GraphElement {
     }
 
 
-    public GraphEdgeList getSrcEdgeList() {
-        return this.SrcEdgeList;
+    public GraphEdgeList getOutoingEdgeList() {
+        return this.EnteringEdgeList;
     }
 
-    public GraphEdgeList getDestEdgeList() {
-        return this.DestEdgeList;
+    public GraphEdgeList getEnteringEdgeList() {
+        return this.OutgoingEdgeList;
     }
 
     public void addToSrcEdgeList(GraphEdge edge) {
-        SrcEdgeList.add(edge);
+        EnteringEdgeList.add(edge);
     }
 
     public void addToDestEdgeList(GraphEdge edge) {
-        DestEdgeList.add(edge);
+        OutgoingEdgeList.add(edge);
     }
 
     /**
      * TextAreaKeyActionHandler
+     * -----------------------------------
      */
     private class TextAreaKeyActionHandler implements KeyListener {
 
@@ -118,6 +119,8 @@ public class GraphNode extends GraphElement {
 
     /**
      * TextAreaMouseActionHandler
+     * -----------------------------------
+     *
      */
     private class TextAreaMouseActionHandler implements MouseListener, MouseMotionListener {
 
@@ -156,11 +159,14 @@ public class GraphNode extends GraphElement {
         @Override
         public void mouseEntered(MouseEvent e) {
             //System.out.println("mouseEntered@TextAreaMouseActionHandler");
-            gField.setSelectedNode(GraphNode.this);//選択ノードに設定する
+            //選択ノードに設定する
+            gField.setSelectedNode(GraphNode.this);
+
+            //ノードに関する情報を西パネルに表示
             if (main_frame == null) {
                 System.out.println("main_frameがnull");
             } else {
-                main_frame.getWest_panel().setTextToTextArea(GraphNode.this.getElementID());
+                main_frame.getWest_panel().showAllNodeInfo(GraphNode.this);
             }
         }
 
@@ -181,6 +187,7 @@ public class GraphNode extends GraphElement {
 
     /**
      * PanelAreaMouseActionHandler
+     * -----------------------------------
      */
     private class PanelAreaMouseActionHandler implements MouseListener, MouseMotionListener {
         protected double nextX = 0;
@@ -220,10 +227,10 @@ public class GraphNode extends GraphElement {
             setBounds((int) nextX, (int) nextY, GraphNode.this.getWidth(), GraphNode.this.getHeight());
 
             //Edgeオブジェクトの再描画命令
-            for (GraphEdge edge : SrcEdgeList) {
+            for (GraphEdge edge : EnteringEdgeList) {
                 edge.setDrawPosition();
             }
-            for (GraphEdge edge : DestEdgeList) {
+            for (GraphEdge edge : OutgoingEdgeList) {
                 edge.setDrawPosition();
             }
 
@@ -245,15 +252,18 @@ public class GraphNode extends GraphElement {
              * オブジェクト再描画命令
              */
             //Edgeオブジェクトの再描画命令
-            for (GraphEdge edge : SrcEdgeList) {
+            for (GraphEdge edge : EnteringEdgeList) {
                 edge.repaint();
+                //edge.getTextarea().revalidate();
             }
-            for (GraphEdge edge : DestEdgeList) {
+            for (GraphEdge edge : OutgoingEdgeList) {
                 edge.repaint();
+                //edge.getTextarea().revalidate();
             }
 
             //Nodeオブジェクトの再描画命令
             repaint();
+
 
         }
 
