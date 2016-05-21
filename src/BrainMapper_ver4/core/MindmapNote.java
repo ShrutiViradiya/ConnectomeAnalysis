@@ -1,6 +1,6 @@
 package BrainMapper_ver4.core;
 
-import BrainMapper_ver4.core_support.MindmapScrollPane;
+import BrainMapper_ver4.core_support.GraphFieldScrollPane;
 import BrainMapper_ver4.utils.FileFilterConstructor_Extension_ver2;
 import BrainMapper_ver4.utils.FontProperty;
 import BrainMapper_ver4.utils.WordReplacement;
@@ -81,8 +81,8 @@ public class MindmapNote extends JFrame implements Printable {
     private JMenu helpMenu = null;
     private JMenuItem helpMenuItem = null;
     private JMenuItem aboutMenuItem = null;
-    private MindmapNode Node = null;
-    private MindmapScrollPane jScrollPane = null;
+    private GraphNode Node = null;
+    private GraphFieldScrollPane jScrollPane = null;
     private JPanel jPanel = null;
     private JLabel FootLeftLabel = null;
     private JLabel FootRightLabel = null;
@@ -97,10 +97,10 @@ public class MindmapNote extends JFrame implements Printable {
     private final static String ENCODINGS[] = {new InputStreamReader(System.in).getEncoding(), "SJIS", "EUC_JP", "ISO2022JP", "UTF8"};//対応している文字コード
     private final static String ENCODING_TEXT[] = {"デフォルト(D)", "SJIS", "EUC", "JIS", "UTF-8"};//文字コード指定のメニューのテキスト
     private final static int ENCODING_MNEMONIC[] = {KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_E, KeyEvent.VK_J, KeyEvent.VK_8};//文字コード指定のメニューのニーモニック
-    private final static String MINDMAP_NODE_LIST = "MindmapNodeList.xml";//MindmapNodeList の設定ファイル名
-    private final static String MINDMAP_FIELD_FILE = "MindmapField.xml";//MindmapField の設定ファイル名
+    private final static String MINDMAP_NODE_LIST = "GraphNodeList.xml";//GraphNodeList の設定ファイル名
+    private final static String MINDMAP_FIELD_FILE = "GraphField.xml";//GraphField の設定ファイル名
     private final static String J_FRAME_FILE = "MindMapNoteFrame.xml";//jFrame の設定ファイル名
-    public final static Font DEFAULT_FONT = new Font("Monospaced", Font.PLAIN, 14); //MindmapNode のデフォルトのフォント
+    public final static Font DEFAULT_FONT = new Font("Monospaced", Font.PLAIN, 14); //GraphNode のデフォルトのフォント
 
     /**
      * スターター
@@ -222,7 +222,7 @@ public class MindmapNote extends JFrame implements Printable {
      */
     private JScrollPane getCenterScrollPane() {
         if (jScrollPane == null) {
-            jScrollPane = new MindmapScrollPane();//JScrollPane();
+            jScrollPane = new GraphFieldScrollPane();//JScrollPane();
 
             mmField = getMindmapField();
             jScrollPane.setViewportView(mmField);
@@ -239,16 +239,16 @@ public class MindmapNote extends JFrame implements Printable {
     /**
      * initialize() <- setContentpane() <- getJContentePane() <- getCenterScrollPane <- getMindmapField()
      */
-    private MindmapField mmField;
+    private GraphField mmField;
 
-    private MindmapField getMindmapField() {
+    private GraphField getMindmapField() {
         System.out.println("---------- getMindmapField() ----------");
         if (mmField == null) {
-            //mmField = (MindmapField) SaverAndLoader.load(MINDMAP_FIELD_FILE);
+            //mmField = (GraphField) SaverAndLoader.load(MINDMAP_FIELD_FILE);
             mmField = SaverAndLoader.loadMindmapField(MINDMAP_FIELD_FILE, MINDMAP_NODE_LIST);
             if (mmField == null) {
                 System.out.println("MindmapFieldのロードに失敗しました");
-                mmField = new MindmapField();//
+                mmField = new GraphField();//
                 mmField.setFont(DEFAULT_FONT);
             }
             mmField.setMindmapNote(this);//MindmapNoteが保持する各種コンポーネントへのアクセスを確保するため
@@ -334,7 +334,7 @@ public class MindmapNote extends JFrame implements Printable {
         System.out.println("closeFile() -> " + closed);
         if (closed) {
             setVisible(false);
-            //MindmapNode.setText("");
+            //GraphNode.setText("");
             setThisTitle();
             SaverAndLoader.saveNodes(mmField.getNodeList(), mmField.getEdgeList(), MINDMAP_NODE_LIST);
             //SaverAndLoader.saveMindmapField(mmField, MINDMAP_FIELD_FILE);
@@ -1183,7 +1183,7 @@ public class MindmapNote extends JFrame implements Printable {
             wrapCheckBoxMenuItem = new JCheckBoxMenuItem();
             wrapCheckBoxMenuItem.setMnemonic(KeyEvent.VK_W);
             wrapCheckBoxMenuItem.setText("右端で折り返す(W)");
-            //wrapCheckBoxMenuItem.setSelected(MindmapNode.getLineWrap());
+            //wrapCheckBoxMenuItem.setSelected(GraphNode.getLineWrap());
             wrapCheckBoxMenuItem.addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent e) {
                     Node.getTextarea().setLineWrap(!Node.getTextarea().getLineWrap());
@@ -1330,7 +1330,7 @@ public class MindmapNote extends JFrame implements Printable {
      * @param jTextArea
      * @param me
      */
-    private void showJPopupMenu(final MindmapNode jTextArea, final MouseEvent me) {
+    private void showJPopupMenu(final GraphNode jTextArea, final MouseEvent me) {
         if (pop == null) {
             pop = new JPopupMenu();
             action = new Action[5];
@@ -1600,7 +1600,7 @@ public class MindmapNote extends JFrame implements Printable {
     private PrintRequestAttributeSet aset;
 
     /**
-     * MindmapNode の文書を印刷します
+     * GraphNode の文書を印刷します
      */
     private void printFile() {
         if (aset == null) {

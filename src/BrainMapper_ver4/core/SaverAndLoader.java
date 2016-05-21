@@ -1,7 +1,7 @@
 package BrainMapper_ver4.core;
 
-import BrainMapper_ver4.core_support.MindmapEdgeList;
-import BrainMapper_ver4.core_support.MindmapNodeList;
+import BrainMapper_ver4.core_support.GraphEdgeList;
+import BrainMapper_ver4.core_support.GraphNodeList;
 import BrainMapper_ver4.utils.JXPathReadHelper_ver1;
 import BrainMapper_ver4.utils.JXPathWriteHelper_ver1;
 import org.w3c.dom.Document;
@@ -50,12 +50,12 @@ public class SaverAndLoader {
         return container;
     }
 
-    static MindmapField loadMindmapField(String MindmapFieldDataFilePath, String NodeListFilePath) {
+    static GraphField loadMindmapField(String MindmapFieldDataFilePath, String NodeListFilePath) {
         System.out.println("---------- Start: loadMindmapField ----------");
         //MindmapFieldDataFileのロード
-        MindmapField mmField = null;
+        GraphField mmField = null;
         File MindmapFieldDataFile = new File(SaveFolder + "/" + MindmapFieldDataFilePath);
-        mmField = new MindmapField();
+        mmField = new GraphField();
         mmField.setFont(MindmapNote.DEFAULT_FONT);
 
         File NodeListFile = new File(SaveFolder + "/" + NodeListFilePath);
@@ -69,12 +69,12 @@ public class SaverAndLoader {
             ArrayList<String> BrainArea_Ys = JXPRH.getListOfTargetElementValue("//brain/node/y");
             ArrayList<String> BrainArea_Values = JXPRH.getListOfTargetElementValue("//brain/node/value");
             ArrayList<String> BrainArea_IDs = JXPRH.getListOfTargetElementValue("//brain/node/@id");
-            MindmapNodeList LoadedNodeList = new MindmapNodeList();
+            GraphNodeList LoadedNodeList = new GraphNodeList();
             System.out.println("BrainArea_Xs.size(): " + BrainArea_Xs.size());
             System.out.println("BrainArea_Values.size(): " + BrainArea_Values.size());
             System.out.println("BrainArea_IDs.size(): " + BrainArea_IDs.size());
             for (int i = 0; i < BrainArea_Xs.size(); i++) {
-                MindmapNode new_mmnode = new MindmapNode(BrainArea_IDs.get(i), BrainArea_Values.get(i));
+                GraphNode new_mmnode = new GraphNode(BrainArea_IDs.get(i), BrainArea_Values.get(i));
                 new_mmnode.setBounds(Integer.valueOf(BrainArea_Xs.get(i)), Integer.valueOf(BrainArea_Ys.get(i)), 80, 30);
                 LoadedNodeList.add(new_mmnode);
             }
@@ -86,9 +86,9 @@ public class SaverAndLoader {
             ArrayList<String> Edge_IDs = JXPRH.getListOfTargetElementValue("//brain/edge/@id");
             ArrayList<String> SrcNodeIDs = JXPRH.getListOfTargetElementValue("//brain/edge/srcNode");
             ArrayList<String> DestNodeIDs = JXPRH.getListOfTargetElementValue("//brain/edge/destNode");
-            MindmapEdgeList LoadedEdgeList = new MindmapEdgeList();
+            GraphEdgeList LoadedEdgeList = new GraphEdgeList();
             for (int i = 0; i < SrcNodeIDs.size(); i++) {
-                LoadedEdgeList.add(new MindmapEdge(Edge_IDs.get(i), LoadedNodeList.getNodeByID(SrcNodeIDs.get(i)), LoadedNodeList.getNodeByID(DestNodeIDs.get(i))));
+                LoadedEdgeList.add(new GraphEdge(Edge_IDs.get(i), LoadedNodeList.getNodeByID(SrcNodeIDs.get(i)), LoadedNodeList.getNodeByID(DestNodeIDs.get(i))));
             }
             mmField.setEdgeList(LoadedEdgeList);
             mmField.deployEdges();
@@ -153,7 +153,7 @@ public class SaverAndLoader {
     }
 
 
-    static void saveMindmapField(MindmapField mmField, String file) {
+    static void saveMindmapField(GraphField mmField, String file) {
         System.out.println("SaverAndLoader#saveMindMapFile()");
         XMLEncoder encoder = null;
         boolean flag = false;
@@ -191,7 +191,7 @@ public class SaverAndLoader {
         }
     }
 
-    static void saveNodes(ArrayList<MindmapNode> mmNodeList, ArrayList<MindmapEdge> mmEdgeList, String filename) {
+    static void saveNodes(ArrayList<GraphNode> mmNodeList, ArrayList<GraphEdge> mmEdgeList, String filename) {
         System.out.println("SaverAndLoader#saveNodes()");
         boolean flag = false;
         try {
@@ -199,7 +199,7 @@ public class SaverAndLoader {
             Document DomDocument = jxh.createNewDomDocument("brain");
             System.out.println(" XMLへの書き込み...");
             System.out.println("mmNodeList.size(): " + mmNodeList.size());
-            for (MindmapNode node : mmNodeList) {
+            for (GraphNode node : mmNodeList) {
                 /**
                  * Nodeの保存
                  */
@@ -207,7 +207,7 @@ public class SaverAndLoader {
                 jxh.appendJXPath(DomDocument, "/brain/node[@id='" + node.getElementID() + "']/y", node.getLeftUpperCornerY());
                 jxh.appendJXPath(DomDocument, "/brain/node[@id='" + node.getElementID() + "']/value", node.getTextarea().getText());
             }
-            for (MindmapEdge edge : mmEdgeList) {
+            for (GraphEdge edge : mmEdgeList) {
                 /**
                  * Edgeの保存
                  */

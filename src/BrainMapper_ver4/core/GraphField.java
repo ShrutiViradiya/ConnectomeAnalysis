@@ -1,8 +1,8 @@
 package BrainMapper_ver4.core;
 
-import BrainMapper_ver4.core_support.Element;
-import BrainMapper_ver4.core_support.MindmapEdgeList;
-import BrainMapper_ver4.core_support.MindmapNodeList;
+import BrainMapper_ver4.core_support.GraphElement;
+import BrainMapper_ver4.core_support.GraphEdgeList;
+import BrainMapper_ver4.core_support.GraphNodeList;
 
 import javax.swing.*;
 import javax.swing.undo.UndoManager;
@@ -17,19 +17,19 @@ import java.util.ArrayList;
 /**
  * Created by issey on 2016/02/13.
  * MindmapNote.java は NogNote.java を真似て書いているのに合わせて、
- * この MindmapField.java は JTextAreaの骨格を真似て作り始めている。
+ * この GraphField.java は JTextAreaの骨格を真似て作り始めている。
  * ただし、スーパークラスはJPanelであって欲しいので
  */
-public class MindmapField extends JPanel {
+public class GraphField extends GraphElement {
 
-    MindmapNodeList NodeList = new MindmapNodeList();
-    MindmapEdgeList EdgeList = new MindmapEdgeList();
-    MindmapNode selectedNode;//選択中のノード
-    MindmapNode anchoredNode;//アンカーをかける（バックグラウンドで選択する）ノード。
+    GraphNodeList NodeList = new GraphNodeList();
+    GraphEdgeList EdgeList = new GraphEdgeList();
+    GraphNode selectedNode;//選択中のノード
+    GraphNode anchoredNode;//アンカーをかける（バックグラウンドで選択する）ノード。
     MindmapNote mmNote;//MindmapNoteが保持する各種コンポーネントへのアクセスを確保するため
 
-    MindmapNode root;
-    MindmapNode first;
+    GraphNode root;
+    GraphNode first;
 
     private UndoManager undoManager = new UndoManager();
     UndoableEditSupport undoableEditSupport;
@@ -38,8 +38,8 @@ public class MindmapField extends JPanel {
     /**
      * コンストラクタ
      */
-    public MindmapField() {
-        System.out.println("---------- MindmapField ----------");
+    public GraphField() {
+        System.out.println("---------- GraphField ----------");
         setPreferredSize(new Dimension(4000, 2400));
         setBackground(Color.PINK);
         setLayout(null);
@@ -47,9 +47,9 @@ public class MindmapField extends JPanel {
 /*
         if (NodeList.size() == 0) {
             System.out.println("NodeListのロードに失敗したようです");
-            ArrayList<MindmapNode> NodeList = new ArrayList<>();
-            root = new MindmapNode("root", this);
-            first = new MindmapNode("first", this);
+            ArrayList<GraphNode> NodeList = new ArrayList<>();
+            root = new GraphNode("root", this);
+            first = new GraphNode("first", this);
             NodeList.add(root);
             NodeList.add(first);
             //this.add(root);
@@ -83,7 +83,7 @@ public class MindmapField extends JPanel {
         //int x = 2000;
         //int y = 1200;
 
-        for (MindmapNode mmNode : this.NodeList) {
+        for (GraphNode mmNode : this.NodeList) {
             this.add(mmNode);
             mmNode.setBounds(mmNode.getX(), mmNode.getY(), 80, 30);
             mmNode.adjustNodeSize();
@@ -95,17 +95,17 @@ public class MindmapField extends JPanel {
 
     public void deployEdges() {
         System.out.println("Edge数：" + this.EdgeList.size());
-        for (MindmapEdge mmEdge : this.EdgeList) {
+        for (GraphEdge mmEdge : this.EdgeList) {
             this.add(mmEdge);
             //mmEdge.setBounds(mmEdge.getX(), mmEdge.getY(), 80, 30);
             //mmEdge.adjustNodeSize();
         }
     }
 
-    public MindmapNode createNewNode(int x, int y, String value) {
-        MindmapNode NewNode = new MindmapNode(value);//新たなノードオブジェクトの生成
-        NewNode.setBelongingMindmapField(this);//所属するMindmapFieldを登録
-        this.NodeList.add(NewNode);//MindmapFieldオブジェクトが持つNodeListにも登録
+    public GraphNode createNewNode(int x, int y, String value) {
+        GraphNode NewNode = new GraphNode(value);//新たなノードオブジェクトの生成
+        NewNode.setBelongingGraphField(this);//所属するGraphFieldを登録
+        this.NodeList.add(NewNode);//GraphFieldオブジェクトが持つNodeListにも登録
         this.add(NewNode);//Swingのコンポーネントとしても追加
         NewNode.setBounds(x, y, 100, 100);
         NewNode.adjustNodeSize();
@@ -119,30 +119,30 @@ public class MindmapField extends JPanel {
     }
 
 
-    public void deleteNode(MindmapNode node) {
+    public void deleteNode(GraphNode node) {
         //まず削除対象ノードに登録されているエッジを消す
-        for (MindmapEdge edge : node.getSrcEdgeList()) {
+        for (GraphEdge edge : node.getSrcEdgeList()) {
             this.remove(edge);//Swingコンポーネントとしての存在を消す
-            this.EdgeList.remove(edge);//MindmapField上の登録リストから消す
+            this.EdgeList.remove(edge);//GraphField上の登録リストから消す
         }
-        for (MindmapEdge edge : node.getDestEdgeList()) {
+        for (GraphEdge edge : node.getDestEdgeList()) {
             this.remove(edge);//Swingコンポーネントとしての存在を消す
-            this.EdgeList.remove(edge);//MindmapField上の登録リストから消す
+            this.EdgeList.remove(edge);//GraphField上の登録リストから消す
         }
 
-        //続いてMindmapFieldから対象ノードを消す
+        //続いてGraphFieldから対象ノードを消す
         this.remove(node);//Swingコンポーネントとしての存在を消す
-        this.NodeList.remove(node);//MindmapField上の登録リストから消す
+        this.NodeList.remove(node);//GraphField上の登録リストから消す
     }
 
-    public MindmapEdge createNewEdge(MindmapNode srcNode, MindmapNode destNode) {
-        MindmapEdge ExistingEdge = this.EdgeList.getEdgeBySrcNodeAndDestNode(srcNode, destNode);
+    public GraphEdge createNewEdge(GraphNode srcNode, GraphNode destNode) {
+        GraphEdge ExistingEdge = this.EdgeList.getEdgeBySrcNodeAndDestNode(srcNode, destNode);
         if (ExistingEdge != null) {//既に指定された起点、終点を持つエッジがあるなら既存のEdgeを返す
             System.out.println("The edge from " + srcNode.getElementID() + " to " + destNode.ElementID + "is already exiting.");
             return ExistingEdge;
         } else {//既に指定された起点、終点を持つエッジがないならば新たなEdgeを作る。
-            MindmapEdge NewEdge = new MindmapEdge(srcNode, destNode);
-            NewEdge.setBelongingMindmapField(this);
+            GraphEdge NewEdge = new GraphEdge(srcNode, destNode);
+            NewEdge.setBelongingGraphField(this);
             this.EdgeList.add(NewEdge);
             this.add(NewEdge);
             NewEdge.setDrawPosition();
@@ -152,17 +152,17 @@ public class MindmapField extends JPanel {
         }
     }
 
-    public void deleteEdge(MindmapNode srcNode, MindmapNode destNode) {
-        MindmapEdge ExistingEdge = this.EdgeList.getEdgeBySrcNodeAndDestNode(srcNode, destNode);
+    public void deleteEdge(GraphNode srcNode, GraphNode destNode) {
+        GraphEdge ExistingEdge = this.EdgeList.getEdgeBySrcNodeAndDestNode(srcNode, destNode);
         if (ExistingEdge != null) {//既に指定された起点、終点を持つエッジがあるなら既存のEdgeを返す
 
             //SrcNodeの登録から消す
             srcNode.getSrcEdgeList().remove(ExistingEdge);
             //DestNodeの登録から消す
             destNode.getDestEdgeList().remove(ExistingEdge);
-            //MindmapFieldの登録から消す
+            //GraphFieldの登録から消す
             this.EdgeList.remove(ExistingEdge);
-            //MindmapFieldのJComponentとしての存在を消す。
+            //GraphFieldのJComponentとしての存在を消す。
             this.remove(ExistingEdge);
             this.repaint();
             System.out.println("The edge from " + srcNode.getElementID() + " to " + destNode.ElementID + "has removed.");
@@ -171,25 +171,33 @@ public class MindmapField extends JPanel {
         }
     }
 
-    public ArrayList<MindmapNode> getNodeList() {
+    public ArrayList<GraphNode> getNodeList() {
         return this.NodeList;
     }
 
-    public ArrayList<MindmapEdge> getEdgeList() {
+    public ArrayList<GraphEdge> getEdgeList() {
         return this.EdgeList;
     }
 
-    public void setNodeList(MindmapNodeList NodeList) {
+    /**
+     * 設定ファイルをLoadする際に使う
+     */
+    public void setNodeList(GraphNodeList NodeList) {
         this.NodeList = NodeList;
-        for (MindmapNode node : NodeList) {
-            node.setBelongingMindmapField(this);
+        for (GraphNode node : NodeList) {
+            node.setBelongingGraphField(this);
         }
     }
 
-    public void setEdgeList(MindmapEdgeList EdgeList) {
+    /**
+     * 設定ファイルをLoadする際に使う
+     *
+     * @param EdgeList
+     */
+    public void setEdgeList(GraphEdgeList EdgeList) {
         this.EdgeList = EdgeList;
-        for (MindmapEdge edge : EdgeList) {
-            edge.setBelongingMindmapField(this);
+        for (GraphEdge edge : EdgeList) {
+            edge.setBelongingGraphField(this);
         }
     }
 
@@ -197,15 +205,15 @@ public class MindmapField extends JPanel {
         this.mmNote = mmNote;
     }
 
-    public MindmapNode getRootNode() {
+    public GraphNode getRootNode() {
         return root;
     }
 
-    public MindmapNode getFirstNode() {
+    public GraphNode getFirstNode() {
         return first;
     }
 
-    public void setSelectedNode(MindmapNode node) {
+    public void setSelectedNode(GraphNode node) {
         //既に選択されているNodeに対して、Diactivate処理
         //System.out.println("何か選択されていたり、新たに選択されたNodeが既に選択中でないなら");
         //System.out.println("既に選択中のNodeのアクティブ枠を消す");
@@ -226,11 +234,11 @@ public class MindmapField extends JPanel {
         selectedNode.getTextarea().setBorder(selectedNode.ActiveBorder);
     }
 
-    public void setAnchoredNode(MindmapNode node) {
+    public void setAnchoredNode(GraphNode node) {
         this.anchoredNode = node;
     }
 
-    public void setAsRootNode(MindmapNode node) {
+    public void setAsRootNode(GraphNode node) {
         this.root = node;
     }
 
@@ -254,12 +262,11 @@ public class MindmapField extends JPanel {
         selectedNode.getTextarea().setBorder(selectedNode.ActiveBorder);
     }
 
-    public Element getSelectedNode() {
+    public GraphElement getSelectedNode() {
         return this.selectedNode;
     }
 
-
-    public void setAsDescribeTarget(MindmapNode node) {
+    public void setAsDescribeTarget(GraphNode node) {
         //既に選択されているNodeに対して、Diactivate処理
         //System.out.println("何か選択されていたり、新たに選択されたNodeが既に選択中でないなら");
         //System.out.println("既に選択中のNodeのアクティブ枠を消す");
@@ -284,12 +291,12 @@ public class MindmapField extends JPanel {
 
         @Override
         public void keyTyped(KeyEvent e) {
-            //System.out.println("keyTyped@MindmapField");
+            //System.out.println("keyTyped@GraphField");
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            //System.out.println("KeyPressed@MindmapField");
+            //System.out.println("KeyPressed@GraphField");
             //System.out.println("Selected Node ID: " + selectedNode.getElementID());
             int modifier = e.getModifiersEx();
             int keycode = e.getKeyCode();
@@ -297,7 +304,7 @@ public class MindmapField extends JPanel {
             //新しいノードの追加
             if (keycode == KeyEvent.VK_INSERT) {
                 System.out.println("ノードの追加");
-                MindmapNode NewNode = createNewNode(selectedNode.getLeftUpperCornerX() + selectedNode.getWidth() + 10, selectedNode.getLeftUpperCornerY(), "New Node");
+                GraphNode NewNode = createNewNode(selectedNode.getLeftUpperCornerX() + selectedNode.getWidth() + 10, selectedNode.getLeftUpperCornerY(), "New Node");
                 NewNode.repaint();
                 setSelectedNode(NewNode);
                 NewNode.getTextarea().setBorder(NewNode.ActiveBorder);
@@ -312,7 +319,7 @@ public class MindmapField extends JPanel {
                     mmNote.setFootRightLbelText("Node [" + selectedNode.getElementID() + "] has been deleted.");
                     selectedNode = null;
                 }
-                MindmapField.this.repaint();
+                GraphField.this.repaint();
             }
 
             //アンカー設定
@@ -327,7 +334,7 @@ public class MindmapField extends JPanel {
             if (keycode == KeyEvent.VK_T) {
                 if (modifier == InputEvent.SHIFT_DOWN_MASK + InputEvent.CTRL_DOWN_MASK) {
                     if (selectedNode != null && anchoredNode != null) {
-                        MindmapEdge NewEdge = createNewEdge(selectedNode, anchoredNode);
+                        GraphEdge NewEdge = createNewEdge(selectedNode, anchoredNode);
                     }
                 }
             }
@@ -336,7 +343,7 @@ public class MindmapField extends JPanel {
             if (keycode == KeyEvent.VK_F) {
                 if (modifier == InputEvent.SHIFT_DOWN_MASK + InputEvent.CTRL_DOWN_MASK) {
                     if (selectedNode != null && anchoredNode != null) {
-                        MindmapEdge NewEdge = createNewEdge(anchoredNode, selectedNode);
+                        GraphEdge NewEdge = createNewEdge(anchoredNode, selectedNode);
                     }
                 }
             }
@@ -362,7 +369,7 @@ public class MindmapField extends JPanel {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            //System.out.println("keyReleased@MindmapField");
+            //System.out.println("keyReleased@GraphField");
 
         }
 
@@ -371,13 +378,12 @@ public class MindmapField extends JPanel {
 }
 
 class AddNewNodeAction extends AbstractAction {
-    MindmapField mmField;
+    GraphField mmField;
 
     /**
      * コンストラクター.
-     *
      */
-    public AddNewNodeAction(MindmapField mmField) {
+    public AddNewNodeAction(GraphField mmField) {
         super("新しいノードの追加");
         this.mmField = mmField;
     }
@@ -386,12 +392,12 @@ class AddNewNodeAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         if (mmField.selectedNode != null) {
             System.out.println("ノードの追加");
-            MindmapNode NewNode = mmField.createNewNode(mmField.selectedNode.getLeftUpperCornerX() + mmField.selectedNode.getWidth() + 10, mmField.selectedNode.getLeftUpperCornerY(), "New Node");
+            GraphNode NewNode = mmField.createNewNode(mmField.selectedNode.getLeftUpperCornerX() + mmField.selectedNode.getWidth() + 10, mmField.selectedNode.getLeftUpperCornerY(), "New Node");
             NewNode.repaint();
             mmField.setSelectedNode(NewNode);
             NewNode.getTextarea().setBorder(NewNode.ActiveBorder);
             NewNode.adjustNodeSize();
-        }else{
+        } else {
             System.err.println("No node is selected.");
         }
     }

@@ -1,31 +1,21 @@
 package BrainMapper_ver4.core;
 
 
-import BrainMapper_ver4.core_support.Element;
-import BrainMapper_ver4.core_support.MindmapEdgeList;
+import BrainMapper_ver4.core_support.GraphElement;
+import BrainMapper_ver4.core_support.GraphEdgeList;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.Serializable;
-import java.util.Calendar;
 
 /**
  * Created by issey on 2016/02/14.
  */
-public class MindmapNode extends JPanel implements Element, Serializable {
+public class GraphNode extends GraphElement {
 
-    String ElementID = "";
-    int positionX;
-    int positionY;
-    int centerX;
-    int centerY;
-    int Width;
-    int Height;
-    MindmapField mmField;
-    MindmapNote mmNote;
+    GraphField mmField;
     JTextArea textarea;
 
     protected double ViewPortW;
@@ -39,8 +29,8 @@ public class MindmapNode extends JPanel implements Element, Serializable {
     protected double DraggedTimingViewPortX, DraggedTimingViewPortY;
     protected double ClickedTimingViewPortX, ClickedTimingViewPortY;
 
-    MindmapEdgeList SrcEdgeList = new MindmapEdgeList();
-    MindmapEdgeList DestEdgeList = new MindmapEdgeList();
+    GraphEdgeList SrcEdgeList = new GraphEdgeList();
+    GraphEdgeList DestEdgeList = new GraphEdgeList();
 
 
     /**
@@ -49,7 +39,7 @@ public class MindmapNode extends JPanel implements Element, Serializable {
      * @param elementID
      * @param text
      */
-    public MindmapNode(String elementID, String text) {
+    public GraphNode(String elementID, String text) {
         this.textarea = new JTextArea(text);
         add(textarea);
         this.ElementID = elementID;
@@ -67,121 +57,32 @@ public class MindmapNode extends JPanel implements Element, Serializable {
     /**
      * IDを指定しないでコンストラクト
      */
-    public MindmapNode(String text) {
+    public GraphNode(String text) {
         this(makeElementID(), text);
     }
 
-    public void setBelongingMindmapField(MindmapField field) {
+    public void setBelongingGraphField(GraphField field) {
         this.mmField = field;
-    }
-
-    public void setBelongingMindmapNote(MindmapNote note){
-        this.mmNote = note;
-    }
-
-    public String getElementID() {
-        return ElementID;
-    }
-
-    public static String makeElementID() {
-        Calendar cal = Calendar.getInstance();
-        return String.format("%04d", cal.get(Calendar.YEAR)) + String.format("%02d", cal.get(Calendar.MONTH) + 1) + String.format("%02d", cal.get(Calendar.DATE)) + "_" +
-                String.format("%02d", cal.get(Calendar.HOUR)) + "_" + String.format("%02d", cal.get(Calendar.MINUTE)) + "_" + String.format("%02d", cal.get(Calendar.SECOND)) + "_" + String.format("%03d", cal.get(Calendar.MILLISECOND));
     }
 
     public JTextArea getTextarea() {
         return textarea;
     }
 
-    public void setElementID(String elementID) {
-        ElementID = elementID;
-    }
 
-    public void setPositionX(int positionX) {
-        this.positionX = positionX;
-    }
-
-    public void setPositionY(int positionY) {
-        this.positionY = positionY;
-    }
-
-    public void setCenterX(int centerX) {
-        this.centerX = centerX;
-    }
-
-    public void setCenterY(int centerY) {
-        this.centerY = centerY;
-    }
-
-    public void setWidth(int width) {
-        Width = width;
-    }
-
-    public void setHeight(int height) {
-        Height = height;
-    }
-
-    public int getLeftUpperCornerX() {
-        return this.getX();
-    }
-
-    public int getLeftUpperCornerY() {
-        return this.getY();
-    }
-
-    public int getWidth() {
-        return super.getWidth();
-    }
-
-    public int getHeight() {
-        return super.getHeight();
-    }
-
-    public int getCenterX() {
-        return (int) (getLeftUpperCornerX() + (getWidth() / 2.0));
-    }
-
-    public int getCenterY() {
-        return (int) (getLeftUpperCornerY() + (getHeight() / 2.0));
-    }
-
-    public int getRightUpperCornerX() {
-        return getLeftUpperCornerX() + getWidth();
-    }
-
-    public int getRightUpperCornerY() {
-        return getLeftUpperCornerY();
-    }
-
-    public int getRightLowerCornerX() {
-        return getLeftUpperCornerX() + getWidth();
-    }
-
-    public int getRightLowerCornerY() {
-        return getLeftUpperCornerY() + getHeight();
-    }
-
-    public int getLeftLowerCornerX() {
-        return getLeftUpperCornerX();
-    }
-
-    public int getLeftLowerCornerY() {
-        return getLeftUpperCornerY() + getHeight();
-    }
-
-    public MindmapEdgeList getSrcEdgeList() {
+    public GraphEdgeList getSrcEdgeList() {
         return this.SrcEdgeList;
     }
 
-    public MindmapEdgeList getDestEdgeList() {
+    public GraphEdgeList getDestEdgeList() {
         return this.DestEdgeList;
     }
 
-    public void addToSrcEdgeList(MindmapEdge edge) {
+    public void addToSrcEdgeList(GraphEdge edge) {
         SrcEdgeList.add(edge);
     }
 
-    public void addToDestEdgeList(MindmapEdge edge) {
+    public void addToDestEdgeList(GraphEdge edge) {
         DestEdgeList.add(edge);
     }
 
@@ -255,8 +156,8 @@ public class MindmapNode extends JPanel implements Element, Serializable {
         @Override
         public void mouseEntered(MouseEvent e) {
             //System.out.println("mouseEntered@TextAreaMouseActionHandler");
-            mmField.setSelectedNode(MindmapNode.this);//選択ノードに設定する
-            mmField.setAsDescribeTarget(MindmapNode.this);
+            mmField.setSelectedNode(GraphNode.this);//選択ノードに設定する
+            mmField.setAsDescribeTarget(GraphNode.this);
 
         }
 
@@ -285,15 +186,15 @@ public class MindmapNode extends JPanel implements Element, Serializable {
         @Override
         public void mouseClicked(MouseEvent e) {
             //System.out.println("mouseClicked!");
-            ClickedTimingViewPortX = MindmapNode.this.getX();
-            ClickedTimingViewPortY = MindmapNode.this.getY();
+            ClickedTimingViewPortX = GraphNode.this.getX();
+            ClickedTimingViewPortY = GraphNode.this.getY();
             //System.out.println("  (ClickedTimingViewPortX, ClickedTimingViewPortY) = (" + ClickedTimingViewPortX + ", " + ClickedTimingViewPortY + ")");
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
-            PressedTimingViewPortX = MindmapNode.this.getX();
-            PressedTimingViewPortY = MindmapNode.this.getY();
+            PressedTimingViewPortX = GraphNode.this.getX();
+            PressedTimingViewPortY = GraphNode.this.getY();
             //System.out.println("  (PressedTimingViewPortX, PressedTimingViewPortY) = (" + PressedTimingViewPortX + ", " + PressedTimingViewPortY + ")");
             startX = e.getXOnScreen();
             startY = e.getYOnScreen();
@@ -302,8 +203,8 @@ public class MindmapNode extends JPanel implements Element, Serializable {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            DraggedTimingViewPortX = MindmapNode.this.getX();
-            DraggedTimingViewPortY = MindmapNode.this.getY();
+            DraggedTimingViewPortX = GraphNode.this.getX();
+            DraggedTimingViewPortY = GraphNode.this.getY();
             //System.out.println("  (DraggedTimingViewPortX, DraggedTimingViewPortY) = (" + DraggedTimingViewPortX + ", " + DraggedTimingViewPortY + ")");
             endX = e.getXOnScreen();
             endY = e.getYOnScreen();
@@ -313,13 +214,13 @@ public class MindmapNode extends JPanel implements Element, Serializable {
             nextX = PressedTimingViewPortX + dX;
             nextY = PressedTimingViewPortY + dY;
             //System.out.println("  (nextViewPortX, nextViewPortY) = (" + nextViewPortX + ", " + nextViewPortY + ")");
-            setBounds((int) nextX, (int) nextY, MindmapNode.this.getWidth(), MindmapNode.this.getHeight());
+            setBounds((int) nextX, (int) nextY, GraphNode.this.getWidth(), GraphNode.this.getHeight());
 
             //Edgeオブジェクトの再描画命令
-            for (MindmapEdge edge : SrcEdgeList) {
+            for (GraphEdge edge : SrcEdgeList) {
                 edge.setDrawPosition();
             }
-            for (MindmapEdge edge : DestEdgeList) {
+            for (GraphEdge edge : DestEdgeList) {
                 edge.setDrawPosition();
             }
 
@@ -327,24 +228,24 @@ public class MindmapNode extends JPanel implements Element, Serializable {
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            ReleasedTimingViewPortX = MindmapNode.this.getX();
-            ReleasedTimingViewPortY = MindmapNode.this.getY();
+            ReleasedTimingViewPortX = GraphNode.this.getX();
+            ReleasedTimingViewPortY = GraphNode.this.getY();
             //System.out.println("  (ReleasedTimingViewPortX, ReleasedTimingViewPortY) = (" + ReleasedTimingViewPortX + ", " + ReleasedTimingViewPortY + ")");
 
             /**
              * ノードの位置情報を記録
              */
-            positionX = MindmapNode.this.getX();
-            positionY = MindmapNode.this.getY();
+            positionX = GraphNode.this.getX();
+            positionY = GraphNode.this.getY();
 
             /**
              * オブジェクト再描画命令
              */
             //Edgeオブジェクトの再描画命令
-            for (MindmapEdge edge : SrcEdgeList) {
+            for (GraphEdge edge : SrcEdgeList) {
                 edge.repaint();
             }
-            for (MindmapEdge edge : DestEdgeList) {
+            for (GraphEdge edge : DestEdgeList) {
                 edge.repaint();
             }
 
@@ -421,7 +322,7 @@ public class MindmapNode extends JPanel implements Element, Serializable {
         //アンチエイリアシング
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g.drawRoundRect(1, 1, this.getWidth()-3, this.getHeight()-3, 5, 5);
+        g.drawRoundRect(1, 1, this.getWidth() - 3, this.getHeight() - 3, 5, 5);
         //丸いコーナー付きの輪郭の矩形を、このグラフィックスコンテキストの現在
         //の色を使用して描きます。描かれる矩形は、左端と右端がそれぞれ x と
         //x + width、上端と下端がそれぞれ y と y +height で指定されます。

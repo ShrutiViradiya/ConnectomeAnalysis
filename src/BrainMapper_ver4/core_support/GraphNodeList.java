@@ -1,7 +1,7 @@
 package BrainMapper_ver4.core_support;
 
 
-import BrainMapper_ver4.core.MindmapNode;
+import BrainMapper_ver4.core.GraphNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,13 +9,13 @@ import java.util.Collection;
 /**
  * Created by issey on 2016/05/01.
  */
-public class MindmapNodeList extends ArrayList<MindmapNode> {
+public class GraphNodeList extends ArrayList<GraphNode> {
 
     /**
      * IDを指定して目的のNodeを取り出す。
      */
-    public MindmapNode getNodeByID(String ID){
-        for(MindmapNode node : this){
+    public GraphNode getNodeByID(String ID){
+        for(GraphNode node : this){
             if(node.getElementID().equals(ID)){
                return node;
             }
@@ -30,14 +30,14 @@ public class MindmapNodeList extends ArrayList<MindmapNode> {
      * @throws IllegalArgumentException if the specified initial capacity
      *                                  is negative
      */
-    public MindmapNodeList(int initialCapacity) {
+    public GraphNodeList(int initialCapacity) {
         super(initialCapacity);
     }
 
     /**
      * Constructs an empty list with an initial capacity of ten.
      */
-    public MindmapNodeList() {
+    public GraphNodeList() {
     }
 
     /**
@@ -48,7 +48,7 @@ public class MindmapNodeList extends ArrayList<MindmapNode> {
      * @param c the collection whose elements are to be placed into this list
      * @throws NullPointerException if the specified collection is null
      */
-    public MindmapNodeList(Collection<? extends MindmapNode> c) {
+    public GraphNodeList(Collection<? extends GraphNode> c) {
         super(c);
     }
 }

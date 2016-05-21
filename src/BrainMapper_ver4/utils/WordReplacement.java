@@ -1,6 +1,6 @@
 package BrainMapper_ver4.utils;
 
-import BrainMapper_ver4.core.MindmapNode;
+import BrainMapper_ver4.core.GraphNode;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -298,7 +298,7 @@ public class WordReplacement extends JDialog {
         return cancelButton;
     }
 
-    private MindmapNode Node;
+    private GraphNode Node;
 
     /**
      * 文字列を置換します
@@ -438,7 +438,7 @@ public class WordReplacement extends JDialog {
      *
      * @param jTextArea
      */
-    public void setJTextArea(MindmapNode jTextArea) {
+    public void setJTextArea(GraphNode jTextArea) {
         this.Node = jTextArea;
         this.setLocationRelativeTo(jTextArea);
     }

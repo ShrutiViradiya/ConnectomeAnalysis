@@ -8,7 +8,7 @@ import java.awt.event.MouseMotionListener;
 /**
  * Created by issey on 2016/02/14.
  */
-public class MindmapScrollPane extends JScrollPane {
+public class GraphFieldScrollPane extends JScrollPane {
 
     //フィールド
     protected ImageIcon imageicon;
@@ -24,12 +24,12 @@ public class MindmapScrollPane extends JScrollPane {
     protected double ClickedTimingViewPortX, ClickedTimingViewPortY;
 
 
-    public MindmapScrollPane() {
+    public GraphFieldScrollPane() {
         super();
 
-        //getViewport().add(new MindmapField());
-        //getViewport().setView(new MindmapField());
-        //setViewportView(new MindmapField());
+        //getViewport().add(new GraphField());
+        //getViewport().setView(new GraphField());
+        //setViewportView(new GraphField());
         //getViewport().setViewPosition(new Point(2000, 1200));
 
         setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

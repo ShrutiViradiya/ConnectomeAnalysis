@@ -1,8 +1,8 @@
 package BrainMapper_ver4.core_support;
 
 
-import BrainMapper_ver4.core.MindmapEdge;
-import BrainMapper_ver4.core.MindmapNode;
+import BrainMapper_ver4.core.GraphEdge;
+import BrainMapper_ver4.core.GraphNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,13 +10,13 @@ import java.util.Collection;
 /**
  * Created by issey on 2016/05/01.
  */
-public class MindmapEdgeList extends ArrayList<MindmapEdge> {
+public class GraphEdgeList extends ArrayList<GraphEdge> {
 
     /**
      * IDを指定して目的のNodeを取り出す。
      */
-    public MindmapEdge getEdgeByID(String ID){
-        for(MindmapEdge edge : this){
+    public GraphEdge getEdgeByID(String ID){
+        for(GraphEdge edge : this){
             if(edge.getElementID().equals(ID)){
                return edge;
             }
@@ -31,8 +31,8 @@ public class MindmapEdgeList extends ArrayList<MindmapEdge> {
      * @param DestNode
      * @return
      */
-    public MindmapEdge getEdgeBySrcNodeAndDestNode(MindmapNode SrcNode,MindmapNode DestNode){
-         for(MindmapEdge edge : this){
+    public GraphEdge getEdgeBySrcNodeAndDestNode(GraphNode SrcNode, GraphNode DestNode){
+         for(GraphEdge edge : this){
             if(edge.getSrcNode() == SrcNode && edge.getDestNode() == DestNode){
                return edge;
             }
@@ -48,14 +48,14 @@ public class MindmapEdgeList extends ArrayList<MindmapEdge> {
      * @throws IllegalArgumentException if the specified initial capacity
      *                                  is negative
      */
-    public MindmapEdgeList(int initialCapacity) {
+    public GraphEdgeList(int initialCapacity) {
         super(initialCapacity);
     }
 
     /**
      * Constructs an empty list with an initial capacity of ten.
      */
-    public MindmapEdgeList() {
+    public GraphEdgeList() {
     }
 
     /**
@@ -66,7 +66,7 @@ public class MindmapEdgeList extends ArrayList<MindmapEdge> {
      * @param c the collection whose elements are to be placed into this list
      * @throws NullPointerException if the specified collection is null
      */
-    public MindmapEdgeList(Collection<? extends MindmapEdge> c) {
+    public GraphEdgeList(Collection<? extends GraphEdge> c) {
         super(c);
     }
 }

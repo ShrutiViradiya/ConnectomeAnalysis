@@ -1,6 +1,6 @@
 package BrainMapper_ver4.utils;
 
-import BrainMapper_ver4.core.MindmapNode;
+import BrainMapper_ver4.core.GraphNode;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -32,7 +32,7 @@ public class FontProperty extends JDialog {
 	private JTextField nameTextField = null;
 	private JTextField styleTextField = null;
 	private JTextField sizeTextField = null;
-	private MindmapNode jTextArea = null;
+	private GraphNode jTextArea = null;
 	private JTextArea fontTextArea = null;
 	private JPanel determinePanel = null;
 	private JButton okButton = null;
@@ -439,7 +439,7 @@ public class FontProperty extends JDialog {
 	 * 
 	 * @param jTextArea
 	 */
-	public void setJTextArea(MindmapNode jTextArea) {
+	public void setJTextArea(GraphNode jTextArea) {
 		this.jTextArea = jTextArea;
 		this.setLocationRelativeTo(jTextArea);
 		this.font = jTextArea.getFont();

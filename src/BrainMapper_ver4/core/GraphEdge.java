@@ -1,27 +1,26 @@
 package BrainMapper_ver4.core;
 
+import BrainMapper_ver4.core_support.GraphElement;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by issey on 2016/04/30.
  */
-public class MindmapEdge extends JPanel {
+public class GraphEdge extends GraphElement {
 
-    String ElementID = "";
-    MindmapField mmField;
-    MindmapNote mmNote;
+    GraphField mmField;
     JTextArea textarea;
-    MindmapNode srcNode, destNode;
+    GraphNode srcNode, destNode;
     double line_start_X, line_start_Y;
     double edge_panel_x, edge_panel_y;
     double line_end_X, line_end_Y;
     double edge_panel_width, edge_panel_height;
 
-    ArrayList<MindmapNode> NodeList = new ArrayList<>();
+    ArrayList<GraphNode> NodeList = new ArrayList<>();
 
     /**
      * IDを指定してコンストラクト
@@ -30,7 +29,7 @@ public class MindmapEdge extends JPanel {
      * @param srcNode
      * @param destNode
      */
-    public MindmapEdge(String elementID, MindmapNode srcNode, MindmapNode destNode) {
+    public GraphEdge(String elementID, GraphNode srcNode, GraphNode destNode) {
         System.out.println("MindmapEdgeコンストラクタ");
         System.out.println("srcNode.getElementID()=" + srcNode.getElementID());
         System.out.println("destNode.getElementID()=" + destNode.getElementID());
@@ -54,30 +53,23 @@ public class MindmapEdge extends JPanel {
      * @param srcNode
      * @param destNode
      */
-    public MindmapEdge(MindmapNode srcNode, MindmapNode destNode) {
+    public GraphEdge(GraphNode srcNode, GraphNode destNode) {
         this(makeElementID(), srcNode, destNode);
     }
 
     /**
      * @param field
      */
-    public void setBelongingMindmapField(MindmapField field) {
+    public void setBelongingGraphField(GraphField field) {
         this.mmField = field;
-    }
-
-    public void setBelongingMindmapNote(MindmapNote note){
-        this.mmNote = note;
     }
 
     double arrow_head_1_x, arrow_head_1_y;
     double arrow_head_2_x, arrow_head_2_y;
     double arrow_head_3_x, arrow_head_3_y;
 
-    /**
-     *
-     */
     public void setDrawPosition() {
-        System.out.println("------ MindmapEdge#setDrawPosition() -------");
+        System.out.println("------ GraphEdge#setDrawPosition() -------");
         System.out.println("srcNode.getElementID()=" + srcNode.getElementID());
         System.out.println("srcNode.getCenterX()=" + srcNode.getCenterX());
         System.out.println("srcNode.getCenterY()=" + srcNode.getCenterY());
@@ -227,26 +219,15 @@ public class MindmapEdge extends JPanel {
         //System.out.println("@setDrawingPosition: " + (int) edge_panel_x + ", " + (int) edge_panel_y + ":" + (int) edge_panel_width + "x" + (int) edge_panel_height);
     }
 
-    public String getElementID() {
-        return ElementID;
-    }
-
-    public static String makeElementID() {
-        Calendar cal = Calendar.getInstance();
-        return String.format("%04d", cal.get(Calendar.YEAR)) + String.format("%02d", cal.get(Calendar.MONTH) + 1) + String.format("%02d", cal.get(Calendar.DATE)) + "_" +
-                String.format("%02d", cal.get(Calendar.HOUR)) + "_" + String.format("%02d", cal.get(Calendar.MINUTE)) + "_" + String.format("%02d", cal.get(Calendar.SECOND)) + "_" + String.format("%03d", cal.get(Calendar.MILLISECOND));
-    }
-
-
     public JTextArea getTextarea() {
         return textarea;
     }
 
-    public MindmapNode getSrcNode() {
+    public GraphNode getSrcNode() {
         return srcNode;
     }
 
-    public MindmapNode getDestNode() {
+    public GraphNode getDestNode() {
         return destNode;
     }
 
@@ -296,7 +277,7 @@ public class MindmapEdge extends JPanel {
         //セルフループを描く
         if (destNode == srcNode) {
             //System.out.println("セルフループ描く");
-            g2.drawArc((int)(edge_panel_width / 6), (int)(edge_panel_height / 6), 40, 40, 90, 90 + 270);
+            g2.drawArc((int) (edge_panel_width / 6), (int) (edge_panel_height / 6), 40, 40, 90, 90 + 270);
         }
     }
 
