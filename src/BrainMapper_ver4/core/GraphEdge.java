@@ -19,6 +19,7 @@ public class GraphEdge extends GraphElement {
     double edge_panel_x, edge_panel_y;
     double line_end_X, line_end_Y;
     double edge_panel_width, edge_panel_height;
+    double text_x, text_y;
 
     ArrayList<GraphNode> NodeList = new ArrayList<>();
 
@@ -40,7 +41,8 @@ public class GraphEdge extends GraphElement {
         setDrawPosition();
         this.ElementID = elementID;
         this.textarea = new JTextArea("edge");
-        add(textarea);
+
+        //add(textarea);
 
         //setBackground(Color.GREEN);
         setOpaque(false);
@@ -216,6 +218,11 @@ public class GraphEdge extends GraphElement {
             mmField.setComponentZOrder(this, mmField.getComponentCount() - 1);//最背面へ
             //gField.setComponentZOrder(this, 0);//最前面へ
         }
+
+        //説明テキストの位置設定
+        text_x = this.getWidth() /2;
+        text_y = this.getHeight() /2;
+
         ////System.out.println("@setDrawingPosition: " + (int) edge_panel_x + ", " + (int) edge_panel_y + ":" + (int) edge_panel_width + "x" + (int) edge_panel_height);
     }
 
@@ -279,6 +286,9 @@ public class GraphEdge extends GraphElement {
             //System.out.println("セルフループ描く");
             g2.drawArc((int) (edge_panel_width / 6), (int) (edge_panel_height / 6), 40, 40, 90, 90 + 270);
         }
+
+        //説明テキストを描く
+        g2.drawString(textarea.getText(), (int)text_x, (int)text_y);
     }
 
     /**
