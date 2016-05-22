@@ -229,9 +229,13 @@ public class GraphNode extends GraphElement {
             //Edgeオブジェクトの再描画命令
             for (GraphEdge edge : EnteringEdgeList) {
                 edge.setDrawPosition();
+                //edge.textarea.revalidate();
+                edge.revalidate();
             }
             for (GraphEdge edge : OutgoingEdgeList) {
                 edge.setDrawPosition();
+                //edge.textarea.revalidate();
+                edge.revalidate();
             }
 
         }
@@ -254,11 +258,15 @@ public class GraphNode extends GraphElement {
             //Edgeオブジェクトの再描画命令
             for (GraphEdge edge : EnteringEdgeList) {
                 edge.repaint();
-                //edge.getTextarea().revalidate();
+                //edge.textarea.revalidate();
+                //edge.revalidate();
+                edge.adjustTextAreaSize();
             }
             for (GraphEdge edge : OutgoingEdgeList) {
                 edge.repaint();
-                //edge.getTextarea().revalidate();
+                //edge.textarea.revalidate();
+                //edge.revalidate();
+                edge.adjustTextAreaSize();
             }
 
             //Nodeオブジェクトの再描画命令
@@ -305,7 +313,7 @@ public class GraphNode extends GraphElement {
 
 
     /**
-     * Nodeの表示サイズの最適化
+     * Nodeの表示サイズをの最適化
      */
     public void adjustNodeSize() {
         FontMetrics fMetrics = textarea.getFontMetrics(textarea.getFont());

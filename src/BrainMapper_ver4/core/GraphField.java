@@ -83,26 +83,27 @@ public class GraphField extends GraphElement {
 
     }
 
-    public void deployNodes() {
-        //int x = 2000;
-        //int y = 1200;
+    /**
+     * NodeListに登録されているNodeをGraphFieldにコンポーネントとして追加してゆく。
+     * またテキストエリアサイズに応じたサイズ調節も行う。
+     */
 
-        for (GraphNode mmNode : this.NodeList) {
-            this.add(mmNode);
-            mmNode.setBounds(mmNode.getX(), mmNode.getY(), 80, 30);
-            mmNode.adjustNodeSize();
-            //mmNode.setBounds(x, y, 80, 30);
-            //x = x + 100;
-            //y = y + 100;
+    public void deployNodes() {
+        for (GraphNode node : this.NodeList) {
+            this.add(node);
+            node.adjustNodeSize();
         }
     }
 
+    /**
+     * EdgeListに登録されているEdgeをGraphFieldにコンポーネントとして追加してゆく。
+     * またテキストエリアサイズの調節も行う。
+     */
     public void deployEdges() {
         System.out.println("Edge数：" + this.EdgeList.size());
-        for (GraphEdge mmEdge : this.EdgeList) {
-            this.add(mmEdge);
-            //mmEdge.setBounds(mmEdge.getX(), mmEdge.getY(), 80, 30);
-            //mmEdge.adjustNodeSize();
+        for (GraphEdge Edge : this.EdgeList) {
+            this.add(Edge);
+            Edge.adjustTextAreaSize();
         }
     }
 
@@ -147,10 +148,12 @@ public class GraphField extends GraphElement {
             return ExistingEdge;
         } else {//既に指定された起点、終点を持つエッジがないならば新たなEdgeを作る。
             GraphEdge NewEdge = new GraphEdge(srcNode, destNode);
+            NewEdge.getTextarea().setText("NewEdge");
             NewEdge.setBelongingGraphField(this);
             NewEdge.setBelongingMainFrame(main_frame);
             this.EdgeList.add(NewEdge);
             this.add(NewEdge);
+            NewEdge.adjustTextAreaSize();
             NewEdge.setDrawPosition();
             NewEdge.repaint();
             System.out.println("A new edge from " + srcNode.getElementID() + " to " + destNode.ElementID + "has been added.");

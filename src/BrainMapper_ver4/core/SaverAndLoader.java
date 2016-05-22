@@ -50,13 +50,13 @@ public class SaverAndLoader {
         return container;
     }
 
-    static GraphField loadMindmapField(MainFrame main_frame, String MindmapFieldDataFilePath, String NodeListFilePath) {
-        System.out.println("---------- Start: loadMindmapField ----------");
+    static GraphField loadGraphElements(MainFrame main_frame, String MindmapFieldDataFilePath, String NodeListFilePath) {
+        System.out.println("---------- Start: loadGraphElements ----------");
         //MindmapFieldDataFileのロード
-        GraphField mmField = null;
-        File MindmapFieldDataFile = new File(SaveFolder + "/" + MindmapFieldDataFilePath);
-        mmField = new GraphField(main_frame);
-        mmField.setFont(MainFrame.DEFAULT_FONT);
+        GraphField gField = null;
+        File GraphElementSaveFile = new File(SaveFolder + "/" + MindmapFieldDataFilePath);
+        gField = new GraphField(main_frame);
+        gField.setFont(MainFrame.DEFAULT_FONT);
 
         File NodeListFile = new File(SaveFolder + "/" + NodeListFilePath);
         Document DomDocument = null;
@@ -73,25 +73,32 @@ public class SaverAndLoader {
             System.out.println("BrainArea_Xs.size(): " + BrainArea_Xs.size());
             System.out.println("BrainArea_Values.size(): " + BrainArea_Values.size());
             System.out.println("BrainArea_IDs.size(): " + BrainArea_IDs.size());
+            GraphNode NewNode;
             for (int i = 0; i < BrainArea_Xs.size(); i++) {
-                GraphNode new_mmnode = new GraphNode(BrainArea_IDs.get(i), BrainArea_Values.get(i));
-                new_mmnode.setBounds(Integer.valueOf(BrainArea_Xs.get(i)), Integer.valueOf(BrainArea_Ys.get(i)), 80, 30);
-                LoadedNodeList.add(new_mmnode);
+                /* */
+                NewNode = new GraphNode(BrainArea_IDs.get(i), BrainArea_Values.get(i));
+                /* */
+                NewNode.setBounds(Integer.valueOf(BrainArea_Xs.get(i)), Integer.valueOf(BrainArea_Ys.get(i)), 80, 30);
+                LoadedNodeList.add(NewNode);
             }
-            mmField.setNodeList(LoadedNodeList);
-            mmField.setAsRootNode(LoadedNodeList.get(0));
-            mmField.deployNodes();
+            gField.setNodeList(LoadedNodeList);
+            gField.setAsRootNode(LoadedNodeList.get(0));
+            gField.deployNodes();
 
             //Edgeのロード
             ArrayList<String> Edge_IDs = JXPRH.getListOfTargetElementValue("//brain/edge/@id");
             ArrayList<String> SrcNodeIDs = JXPRH.getListOfTargetElementValue("//brain/edge/srcNode");
             ArrayList<String> DestNodeIDs = JXPRH.getListOfTargetElementValue("//brain/edge/destNode");
             GraphEdgeList LoadedEdgeList = new GraphEdgeList();
+            GraphEdge NewEdge;
             for (int i = 0; i < SrcNodeIDs.size(); i++) {
-                LoadedEdgeList.add(new GraphEdge(Edge_IDs.get(i), LoadedNodeList.getNodeByID(SrcNodeIDs.get(i)), LoadedNodeList.getNodeByID(DestNodeIDs.get(i))));
+                NewEdge = new GraphEdge(Edge_IDs.get(i), LoadedNodeList.getNodeByID(SrcNodeIDs.get(i)), LoadedNodeList.getNodeByID(DestNodeIDs.get(i)));
+                LoadedEdgeList.add(NewEdge);
+                NewEdge.adjustTextAreaSize();
+                NewEdge.setDrawPosition();//描画内容の位置等を設定
             }
-            mmField.setEdgeList(LoadedEdgeList);
-            mmField.deployEdges();
+            gField.setEdgeList(LoadedEdgeList);//土台となるGraphFieldにEdge達を登録
+            gField.deployEdges();//コンポーネントとしてGraphFieldにEdge達を追加、テキストサイズの調節もする
 
         } catch (FileNotFoundException e) {
             System.err.println("設定ファイル " + NodeListFilePath + " が見つかりません");
@@ -104,8 +111,8 @@ public class SaverAndLoader {
         } finally {
         }
 
-        System.out.println("---------- End: loadMindmapField ----------");
-        return mmField;
+        System.out.println("---------- End: loadGraphElements ----------");
+        return gField;
     }
 
     /**

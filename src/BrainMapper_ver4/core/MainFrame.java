@@ -413,7 +413,7 @@ public class MainFrame extends JFrame implements Printable {
         System.out.println("---------- getGraphField() ----------");
         if (gField == null) {
             //gField = (GraphField) SaverAndLoader.load(MINDMAP_FIELD_FILE);
-            gField = SaverAndLoader.loadMindmapField(this, MINDMAP_FIELD_FILE, MINDMAP_NODE_LIST);
+            gField = SaverAndLoader.loadGraphElements(this, MINDMAP_FIELD_FILE, MINDMAP_NODE_LIST);
             if (gField == null) {
                 System.out.println("MindmapFieldのロードに失敗しました");
                 gField = new GraphField(this);//

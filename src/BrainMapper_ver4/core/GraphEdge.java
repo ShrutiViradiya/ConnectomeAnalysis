@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.GeneralPath;
-import java.util.ArrayList;
 
 /**
  * Created by issey on 2016/04/30.
@@ -16,15 +15,13 @@ import java.util.ArrayList;
 public class GraphEdge extends GraphElement {
 
     GraphField mmField;
-    JTextArea textarea;
+    JTextArea textarea = new JTextArea("none");
     GraphNode srcNode, destNode;
     double line_start_X, line_start_Y;
     double edge_panel_x, edge_panel_y;
     double line_end_X, line_end_Y;
     double edge_panel_width, edge_panel_height;
     double text_x, text_y;
-
-    ArrayList<GraphNode> NodeList = new ArrayList<>();
 
     /**
      * IDを指定してコンストラクト
@@ -45,12 +42,10 @@ public class GraphEdge extends GraphElement {
         this.ElementID = elementID;
 
         this.setLayout(null);
-        this.textarea = new JTextArea("edge");
         add(textarea);
 
-        setBackground(Color.PINK);
-        //setOpaque(false);
-
+        //setBackground(Color.PINK);
+        setOpaque(false);
         //this.addMouseListener(new PanelAreaMouseActionHandler());
         //this.addMouseMotionListener(new PanelAreaMouseActionHandler());
 
@@ -226,15 +221,22 @@ public class GraphEdge extends GraphElement {
             //gField.setComponentZOrder(this, 0);//最前面へ
         }
 
-        //説明テキストの位置設定
+
+        /**
+         * 説明テキストの位置設定
+         */
         text_x = this.getWidth() / 2;
         text_y = this.getHeight() / 2;
-
-        if(textarea!=null) {
+        if (textarea != null) {
             textarea.setBounds((int) text_x, (int) text_y, textarea.getWidth(), textarea.getHeight());
         }
 
         ////System.out.println("@setDrawingPosition: " + (int) edge_panel_x + ", " + (int) edge_panel_y + ":" + (int) edge_panel_width + "x" + (int) edge_panel_height);
+    }
+
+    public void setTextToTextarea(String value) {
+        textarea.setText(value);
+        adjustTextAreaSize();
     }
 
     public JTextArea getTextarea() {
@@ -309,18 +311,15 @@ public class GraphEdge extends GraphElement {
 
     }
 
-
-
     /**
-     * Nodeの表示サイズの最適化
+     * TextAreaの表示サイズをの最適化
      */
-    public void adjustNodeSize() {
+    public void adjustTextAreaSize() {
         FontMetrics fMetrics = textarea.getFontMetrics(textarea.getFont());
         textarea.setLineWrap(true);
         int newWidth = fMetrics.stringWidth(textarea.getText());
         int newHeight = fMetrics.getHeight();
         textarea.setSize(newWidth + 5, newHeight + 5);
-        this.setSize(newWidth + 20, newHeight + 20);
     }
 
     /**
