@@ -284,18 +284,17 @@ public class GraphEdge extends GraphElement {
         // 曲線を描く
         GeneralPath gp = new GeneralPath();
         gp.moveTo(line_start_X, line_start_Y);
-        //double x2 = (line_end_X - line_start_X) * 1 / 2;
-        double x2 = 0;
-        //double x2 = edge_panel_width;
-        double y2 = (line_end_Y - line_start_Y) * 1 / 6;
-        //double y2 = edge_panel_height * 1 / 2;
-        //double y2 = edge_panel_height/2;
-        //double x2 = (line_end_X - line_start_X) * 2 / 6;
-        //double x3 = edge_panel_width * 1 / 2;
-        //double y3 = (line_end_Y - line_start_Y) * 2 / 6;
-        double x3 = edge_panel_width / 2;
-        //double y3 = edge_panel_height * 1 / 2;
-        double y3 = edge_panel_height;
+
+        //double x2 = 0;
+        //double y2 = (line_end_Y - line_start_Y) * 1 / 6;
+        //double x3 = edge_panel_width / 2;
+        //double y3 = edge_panel_height;
+
+        double x2 = (line_start_X + line_end_X) * 1 /2;
+        double y2 = line_start_Y;
+        double x3 = line_start_X;
+        double y3 = line_end_Y;
+
         gp.curveTo(x2, y2, x3, y3, line_end_X, line_end_Y);
         //gp.quadTo(x2, y2, line_end_X, line_end_Y);
         g2.draw(gp);
