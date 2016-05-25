@@ -181,15 +181,6 @@ public class GraphEdge extends GraphElement {
             arrow_head_1_y = arrow_head_1_y + min / 2;
         }
 
-        //Edgeの始点と終点を決める。
-        line_start_X = srcNode.getCenterX() - edge_panel_x;
-        line_start_Y = srcNode.getCenterY() - edge_panel_y;
-        line_end_X = arrow_head_1_x;
-        line_end_Y = arrow_head_1_y;
-        //System.out.println("edge_panel_x = " + edge_panel_x);
-        //System.out.println("edge_panel_y = " + edge_panel_y);
-        //System.out.println("line_end_X = " + line_end_X);
-        //System.out.println("line_end_Y = " + line_end_Y);
 
         //矢印描画の為に使った角度の確認表示
         double degree1 = radian1 * 180d / Math.PI;
@@ -213,6 +204,18 @@ public class GraphEdge extends GraphElement {
         arrow_head_3_x = arrow_head_1_x - 10 * Math.cos(-25 * Math.PI / 180 + radian1);
         arrow_head_3_y = arrow_head_1_y - 10 * Math.sin(-25 * Math.PI / 180 + radian1);
         //System.out.println("arrow_head_3=(" + arrow_head_3_x + ", " + arrow_head_3_y + ")");
+
+        //Edgeの始点と終点を決める。
+        line_start_X = srcNode.getCenterX() - edge_panel_x;
+        line_start_Y = srcNode.getCenterY() - edge_panel_y;
+        //line_end_X = arrow_head_1_x;
+        line_end_X = (arrow_head_2_x + arrow_head_3_x) /2;
+        //line_end_Y = arrow_head_1_y;
+        line_end_Y = (arrow_head_2_y + arrow_head_3_y) / 2;
+        //System.out.println("edge_panel_x = " + edge_panel_x);
+        //System.out.println("edge_panel_y = " + edge_panel_y);
+        //System.out.println("line_end_X = " + line_end_X);
+        //System.out.println("line_end_Y = " + line_end_Y);
 
         //EdgePanelの位置・大きさ指定
         setBounds((int) edge_panel_x, (int) edge_panel_y, (int) edge_panel_width, (int) edge_panel_height);
