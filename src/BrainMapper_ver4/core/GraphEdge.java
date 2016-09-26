@@ -16,12 +16,14 @@ public class GraphEdge extends GraphElement {
 
     GraphField mmField;
     JTextArea textarea = new JTextArea("none");
+    Double weight = 0.0;
     GraphNode srcNode, destNode;
     double line_start_X, line_start_Y;
     double edge_panel_x, edge_panel_y;
     double line_end_X, line_end_Y;
     double edge_panel_width, edge_panel_height;
     double text_x, text_y;
+
 
     /**
      * IDを指定してコンストラクト
@@ -62,10 +64,29 @@ public class GraphEdge extends GraphElement {
     }
 
     /**
+     * IDを指定しないでコンストラクト
+     *
+     * @param srcNode
+     * @param destNode
+     */
+    public GraphEdge(GraphNode srcNode, GraphNode destNode, Double weight) {
+        this(makeElementID(), srcNode, destNode);
+        this.weight = weight;
+    }
+
+    /**
      * @param field
      */
     public void setBelongingGraphField(GraphField field) {
         this.mmField = field;
+    }
+
+    public void setWeight(Double weight){
+        this.weight = weight;
+    }
+
+    public Double getWeight(){
+        return this.weight;
     }
 
     double arrow_head_1_x, arrow_head_1_y;

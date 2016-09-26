@@ -37,10 +37,10 @@ public class GraphNode extends GraphElement {
      * IDを指定してコンストラクト
      *
      * @param elementID
-     * @param text
+     * @param textarea_value
      */
-    public GraphNode(String elementID, String text) {
-        this.textarea = new JTextArea(text);
+    public GraphNode(String elementID, String textarea_value) {
+        this.textarea = new JTextArea(textarea_value);
         add(textarea);
         this.ElementID = elementID;
         setEnabled(false);
