@@ -1,4 +1,4 @@
-package BrainMapper_ver4.core_support;
+package BrainMapper_ver4.core;
 
 import javax.swing.*;
 import java.awt.*;

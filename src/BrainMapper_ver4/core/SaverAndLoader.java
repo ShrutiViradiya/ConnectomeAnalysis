@@ -1,7 +1,9 @@
 package BrainMapper_ver4.core;
 
-import BrainMapper_ver4.core_support.GraphEdgeList;
-import BrainMapper_ver4.core_support.GraphNodeList;
+import BrainMapper_ver4.elements.GraphEdgeList;
+import BrainMapper_ver4.elements.GraphNodeList;
+import BrainMapper_ver4.elements.GraphEdge;
+import BrainMapper_ver4.elements.GraphNode;
 import BrainMapper_ver4.utils.JXPathReadHelper_ver1;
 import BrainMapper_ver4.utils.JXPathWriteHelper_ver1;
 import org.w3c.dom.Document;

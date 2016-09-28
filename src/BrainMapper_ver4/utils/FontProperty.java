@@ -1,6 +1,6 @@
 package BrainMapper_ver4.utils;
 
-import BrainMapper_ver4.core.GraphNode;
+import BrainMapper_ver4.elements.GraphNode;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

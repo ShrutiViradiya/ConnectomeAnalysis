@@ -1,6 +1,6 @@
-package BrainMapper_ver4.core;
+package BrainMapper_ver4.elements;
 
-import BrainMapper_ver4.core_support.GraphElement;
+import BrainMapper_ver4.core.GraphField;
 
 import javax.swing.*;
 import java.awt.*;

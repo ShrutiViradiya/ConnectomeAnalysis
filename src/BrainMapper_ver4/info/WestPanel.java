@@ -1,8 +1,8 @@
 package BrainMapper_ver4.info;
 
-import BrainMapper_ver4.core.GraphEdge;
-import BrainMapper_ver4.core.GraphNode;
-import BrainMapper_ver4.core_support.GraphEdgeList;
+import BrainMapper_ver4.elements.GraphEdge;
+import BrainMapper_ver4.elements.GraphNode;
+import BrainMapper_ver4.elements.GraphEdgeList;
 
 import javax.swing.*;
 import java.awt.*;

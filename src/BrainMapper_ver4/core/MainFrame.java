@@ -1,6 +1,6 @@
 package BrainMapper_ver4.core;
 
-import BrainMapper_ver4.core_support.GraphFieldScrollPane;
+import BrainMapper_ver4.elements.GraphNode;
 import BrainMapper_ver4.info.EastPanel;
 import BrainMapper_ver4.info.WestPanel;
 import BrainMapper_ver4.utils.FileFilterConstructor_Extension_ver2;

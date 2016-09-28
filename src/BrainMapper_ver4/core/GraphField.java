@@ -1,8 +1,10 @@
 package BrainMapper_ver4.core;
 
-import BrainMapper_ver4.core_support.GraphElement;
-import BrainMapper_ver4.core_support.GraphEdgeList;
-import BrainMapper_ver4.core_support.GraphNodeList;
+import BrainMapper_ver4.elements.GraphElement;
+import BrainMapper_ver4.elements.GraphEdgeList;
+import BrainMapper_ver4.elements.GraphNodeList;
+import BrainMapper_ver4.elements.GraphEdge;
+import BrainMapper_ver4.elements.GraphNode;
 
 import javax.swing.*;
 import javax.swing.undo.UndoManager;

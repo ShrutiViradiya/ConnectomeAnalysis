@@ -1,8 +1,8 @@
-package BrainMapper_ver4.core_support;
+package BrainMapper_ver4.elements;
 
 
-import BrainMapper_ver4.core.GraphEdge;
-import BrainMapper_ver4.core.GraphNode;
+import BrainMapper_ver4.elements.GraphEdge;
+import BrainMapper_ver4.elements.GraphNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
