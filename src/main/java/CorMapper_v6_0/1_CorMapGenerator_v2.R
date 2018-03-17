@@ -65,6 +65,7 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     # subject_names
     #
     df <- read.table(DATA_ORDER_INFO, header=F, sep="", stringsAsFactors=TRUE)
+    #loaded_df <- read.table("./data01/df.txt", header=T, sep=" ", stringsAsFactors=TRUE)
     subject_names <- df[[1]]
     subgroup_sbj_names <- subject_names[group_indexes]
     #cat("subgroup_sbj_names:", "\n")
