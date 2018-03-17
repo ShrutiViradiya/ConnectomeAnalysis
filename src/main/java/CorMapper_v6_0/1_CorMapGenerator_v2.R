@@ -66,13 +66,17 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     #
     #df <- read.table(DATA_ORDER_INFO, header=F, sep="", stringsAsFactors=TRUE)
     #subject_names <- df[[1]]
-    df <- read.table("./data01/df.txt", header=T, sep=" ", stringsAsFactors=TRUE)
+    df <- read.table("./data01/df.txt", header=T, sep="\t", stringsAsFactors=TRUE)
+    #if(flagDebug==TRUE) cat("df:", "\n")
+    #if(flagDebug==TRUE) print(df)
+    #if(flagDebug==TRUE) cat("\n")
+
     subject_names <- df$ID
     subgroup_sbj_names <- subject_names[group_indexes]
-    #cat("subgroup_sbj_names:", "\n")
+    cat("subgroup_sbj_names:", "\n")
     cat("   " , paste(subgroup_sbj_names, collapse=" "), "\n")
     #cat("    以上　", length(subgroup_sbj_names), " の症例から体積相関係数の計算をする。", "\n")
-    cat("   from above　", length(subgroup_sbj_names), " cases, calculate volume correlations.", "\n")
+    cat("   from above ", length(subgroup_sbj_names), " cases, calculate volume correlations.", "\n")
 
     #
     # eTIV
@@ -89,7 +93,8 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     # 年齢と性別情報のロード
     #
     #df_sbjname_sex_age <- read.table(SBJECT_PROFILE_FILE_PATH, header=T, sep="\t", stringsAsFactors=TRUE)
-    #df_sbjname_etiv_sex_age <- merge(df_sbjname_etiv, df_sbjname_sex_age, all=FALSE)
+    df_sbjname_sex_age <- data.frame(GIVEN_ID=df$ID, AGE=df$AGE, SEX=df$SEX)
+    df_sbjname_etiv_sex_age <- merge(df_sbjname_etiv, df_sbjname_sex_age, all=FALSE)
     #if(flagDebug==TRUE) cat("df_sbjname_etiv_sex_age:", "\n")
     #if(flagDebug==TRUE) print(df_sbjname_etiv_sex_age)
     #if(flagDebug==TRUE) cat("\n")
@@ -105,13 +110,13 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     #    filtered_file_list <- c(filtered_file_list, children[i])
     #}
     #area_file_set <- filtered_file_list
-    area_file_set <- colnames(df)[7:83]
-    area_file_set <- sort(area_file_set, decreasing=TRUE) #ソート
-    area_file_set_size <- length(area_file_set)
+    area_abbr_list <- colnames(df)[7:83]
+    area_abbr_list <- sort(area_abbr_list, decreasing=TRUE) #ソート
+    area_abbr_list_size <- length(area_abbr_list)
     if(flagDebug==TRUE) cat("The list of volume data file: ", "\n")
-    if(flagDebug==TRUE) print(area_file_set)
-    if(flagDebug==TRUE) cat("以上　", area_file_set_size, "個の脳領域ファイル\n\n")
-    if(flagDebug==TRUE) cat("The above is the list of ", area_file_set_size, " brain area files\n\n")
+    if(flagDebug==TRUE) print(area_abbr_list)
+    if(flagDebug==TRUE) cat("以上　", area_abbr_list_size, "個の脳領域ファイル\n\n")
+    if(flagDebug==TRUE) cat("The above is the list of ", area_abbr_list_size, " brain area files\n\n")
     if(flagDebug==TRUE) Sys.sleep(1)
 
     #
@@ -122,35 +127,36 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
 
     cat("        Edge Values are creating ----- ")
 
-    #area_file_set_size <- 5
-    cat("area_file_set_size==", area_file_set_size, "-----")
-    for( i in 1:area_file_set_size){
+    #area_abbr_list_size <- 5
+    cat("area_abbr_list_size==", area_abbr_list_size, "-----")
+    for( i in 1:area_abbr_list_size){
 
         # NodeNameに関する情報収集
-        area1_file_name <- area_file_set[[i]]
-        #area1_file_name_without_ext <- gsub("\\.[0-9A-Za-z]+$", "", area1_file_name) #拡張子除去
-        #node_name_list <- c(node_name_list, area1_file_name_without_ext) # 脳領域名を集める
-        node_name_list <- c(node_name_list, area1_file_name) # 脳領域名を集める
+        area1_name <- area_abbr_list[[i]]
+        #area1_name_without_ext <- gsub("\\.[0-9A-Za-z]+$", "", area1_name) #拡張子除去
+        #node_name_list <- c(node_name_list, area1_name_without_ext) # 脳領域名を集める
+        node_name_list <- c(node_name_list, area1_name) # 脳領域名を集める
 
-        for(j in 1:area_file_set_size){
+        for(j in 1:area_abbr_list_size){
 
             # NodeNameに関する情報収集
-            area2_file_name <- area_file_set[[j]]
+            area2_name <- area_abbr_list[[j]]
 
             # 処理状況表示
             if(flagDebug==FALSE){
                 if(j== 1){
-                    cat(area_file_set_size - i + 1, " ")
+                    cat(area_abbr_list_size - i + 1, " ")
                 }
             }
-            if(flagDebug==TRUE) cat(area1_file_name, "と", area2_file_name , "の体積相関 ----- ", "\n")
-            if(flagDebug==TRUE) cat("-----", "i=", i, "/", area_file_set_size, "  ", "j=", j, "/", area_file_set_size,"-----","\n")
+            if(flagDebug==TRUE) cat(area1_name, "と", area2_name , "の体積相関 ----- ", "\n")
+            if(flagDebug==TRUE) cat("-----", "i=", i, "/", area_abbr_list_size, "  ", "j=", j, "/", area_abbr_list_size,"-----","\n")
 
             #
             # area1(i番目の脳領域)に関するロード
             #
-            df <- read.table(paste(folder, area1_file_name, sep=""), header=F, sep="", stringsAsFactors=TRUE)
-            area_i_vols_all <- df[[1]] #i番目の領域の全症例の体積データ
+            #df <- read.table(paste(folder, area1_name, sep=""), header=F, sep="", stringsAsFactors=TRUE)
+            #area_i_vols_all <- df[[1]] #i番目の領域の全症例の体積データ
+            area_i_vols_all <- df[, i+6]
             area_i_vols <- area_i_vols_all[group_indexes] #とある領域のGroupの体積データ
             if(flagDebug==TRUE) cat("area_i_vols:", "\n")
             if(flagDebug==TRUE) print(area_i_vols)
@@ -159,8 +165,9 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
             #
             # area2(j番目の脳領域)に関するロード
             #
-            df <- read.table(paste(folder, area2_file_name, sep=""), header=F, sep="", stringsAsFactors=TRUE)
-            area_j_vols_all <- df[[1]] ##j番目の領域の全症例の体積データ
+            #df <- read.table(paste(folder, area2_name, sep=""), header=F, sep="", stringsAsFactors=TRUE)
+            #area_j_vols_all <- df[[1]] ##j番目の領域の全症例の体積データ
+            area_j_vols_all <- df[,j+6] ##j番目の領域の全症例の体積データ
             area_j_vols <- area_j_vols_all[group_indexes] #とある領域のGroupの体積データ
             if(flagDebug==TRUE) cat("area_j_vols:", "\n")
             if(flagDebug==TRUE) print(area_j_vols)
@@ -172,6 +179,7 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
             # この段階で各脳領域体積はeTIVで補正しておく
             #
             #df_sbjname_ivol_jvol <- data.frame(GIVEN_ID=subgroup_sbj_names, I_VOL=area_i_vols, J_VOL=area_j_vols)
+            #df_sbjname_ivol_jvol <- data.frame(GIVEN_ID=subgroup_sbj_names, I_VOL_ADJ=area_i_vols/subgroup_etiv, J_VOL_ADJ=area_j_vols/subgroup_etiv)
             df_sbjname_ivol_jvol <- data.frame(GIVEN_ID=subgroup_sbj_names, I_VOL_ADJ=area_i_vols/subgroup_etiv, J_VOL_ADJ=area_j_vols/subgroup_etiv)
             if(flagDebug==TRUE) cat("df_sbjname_ivol_jvol:", "\n")
             if(flagDebug==TRUE) print(df_sbjname_ivol_jvol)
@@ -207,7 +215,7 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
             correlation_value <- getCorrelationValue(df_for_cor_calc$I_VOL_ADJ_BY_TIVSEXAGE, df_for_cor_calc$J_VOL_ADJ_BY_TIVSEXAGE, p_value_threshold = p_value_threshold, flagDebug=flagDebug)
 
             # 相関係数の計算結果
-            if(flagDebug==TRUE) cat("This group's correlation between ", area1_file_name, " and ", area2_file_name, " is ", correlation_value, "\n")
+            if(flagDebug==TRUE) cat("This group's correlation between ", area1_name, " and ", area2_name, " is ", correlation_value, "\n")
             if(flagDebug==TRUE) cat("\n")
 
             # EdgeValueに関する情報収集
@@ -249,9 +257,14 @@ library(bootstrap)
 #
 LogFile <- file(LOG_FILE_PATH_1, "a")
 
+
+
+
 #
 # Group A Graph の生成
 #
+loaded_df <- read.table("./data01/df.txt", header=T, sep="\t", stringsAsFactors=TRUE)
+ORIGINAL_GROUP_A_INDEXES <- which(loaded_df$Val66Met == "Met+")
 cat("Original Group A (index =", ORIGINAL_GROUP_A_INDEXES, ")\n")
 writeLines(paste("ORIGINAL_GROUP_A_INDEXES: ", paste(ORIGINAL_GROUP_A_INDEXES, collapse=" ")), LogFile)
 set_CorValList_and_NodeNameList(group_indexes=ORIGINAL_GROUP_A_INDEXES, flagDebug=F, p_value_threshold=P_VALUE_THRESHOLD)
@@ -264,6 +277,7 @@ cat("\n")
 #
 # Group B Graph の生成
 #
+ORIGINAL_GROUP_B_INDEXES <- which(loaded_df$Val66Met == "Met-")
 cat("Original Group B (index =", ORIGINAL_GROUP_B_INDEXES, ")\n")
 writeLines(paste("ORIGINAL_GROUP_B_INDEXES: ", paste(ORIGINAL_GROUP_B_INDEXES, collapse=" ")), LogFile)
 set_CorValList_and_NodeNameList(group_indexes=ORIGINAL_GROUP_B_INDEXES, flagDebug=F, p_value_threshold=P_VALUE_THRESHOLD)
