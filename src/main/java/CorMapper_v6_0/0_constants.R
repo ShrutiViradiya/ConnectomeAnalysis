@@ -71,9 +71,9 @@ if(COMPARISON_PATTERN=="BDNF_NML_GG_vs_AA") ORIGINAL_GROUP_B_INDEXES <- group_nm
 # どの程度の相関係数を有意とするかのP値の閾値
 # 採用する相関の閾値設定
 #
-#P_VALUE_THRESHOLD <- 0.05 / ( 77 * 77 - 77 ) / 2 #Bonferroni補正
+#P_VALUE_THRESHOLD <- 0.05 / ( 77 * 76 /2) #Bonferroni補正
 P_VALUE_THRESHOLD <- 1.00 #「p value = 1」とすれば、フィルタなし（閾値なし）と同等
-#P_VALUE_THRESHOLD <- 0.05
+#P_VALUE_THRESHOLD <- 0.05 # 当初はこれでフィルタをかけていた。
 
 ##################################################
 # 出力フォルダ

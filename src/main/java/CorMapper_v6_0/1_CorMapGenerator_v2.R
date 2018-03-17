@@ -65,7 +65,7 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     #
     #df <- read.table(DATA_ORDER_INFO, header=F, sep="", stringsAsFactors=TRUE)
     #subject_names <- df[[1]]
-    df <- read.table("./data01/df.txt", header=T, sep="\t", stringsAsFactors=TRUE)
+    df <- read.table(paste(OUTPUT_PARENT_FLD_PATH_1, "df.txt", sep=""), header=T, sep="\t", stringsAsFactors=TRUE)
     #if(flagDebug==TRUE) cat("df:", "\n")
     #if(flagDebug==TRUE) print(df)
     #if(flagDebug==TRUE) cat("\n")
