@@ -64,9 +64,10 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     #
     # subject_names
     #
-    df <- read.table(DATA_ORDER_INFO, header=F, sep="", stringsAsFactors=TRUE)
-    #loaded_df <- read.table("./data01/df.txt", header=T, sep=" ", stringsAsFactors=TRUE)
-    subject_names <- df[[1]]
+    #df <- read.table(DATA_ORDER_INFO, header=F, sep="", stringsAsFactors=TRUE)
+    #subject_names <- df[[1]]
+    df <- read.table("./data01/df.txt", header=T, sep=" ", stringsAsFactors=TRUE)
+    subject_names <- df$ID
     subgroup_sbj_names <- subject_names[group_indexes]
     #cat("subgroup_sbj_names:", "\n")
     cat("   " , paste(subgroup_sbj_names, collapse=" "), "\n")
@@ -76,8 +77,9 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     #
     # eTIV
     #
-    df <- read.table(ETIV_FILE_PATH, header=F, sep="", stringsAsFactors=TRUE)
-    etiv <- df[[1]]
+    #df <- read.table(ETIV_FILE_PATH, header=F, sep="", stringsAsFactors=TRUE)
+    #etiv <- df[[1]]
+    etiv <- df$eTIV
     subgroup_etiv <- etiv[group_indexes]
     if(flagDebug==TRUE) cat("subgroup_etiv:", "\n    ")
     if(flagDebug==TRUE) print(subgroup_etiv)
@@ -86,28 +88,29 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     #
     # 年齢と性別情報のロード
     #
-    df_sbjname_sex_age <- read.table(SBJECT_PROFILE_FILE_PATH, header=T, sep="\t", stringsAsFactors=TRUE)
-    df_sbjname_etiv_sex_age <- merge(df_sbjname_etiv, df_sbjname_sex_age, all=FALSE)
-    if(flagDebug==TRUE) cat("df_sbjname_etiv_sex_age:", "\n")
-    if(flagDebug==TRUE) print(df_sbjname_etiv_sex_age)
-    if(flagDebug==TRUE) cat("\n")
+    #df_sbjname_sex_age <- read.table(SBJECT_PROFILE_FILE_PATH, header=T, sep="\t", stringsAsFactors=TRUE)
+    #df_sbjname_etiv_sex_age <- merge(df_sbjname_etiv, df_sbjname_sex_age, all=FALSE)
+    #if(flagDebug==TRUE) cat("df_sbjname_etiv_sex_age:", "\n")
+    #if(flagDebug==TRUE) print(df_sbjname_etiv_sex_age)
+    #if(flagDebug==TRUE) cat("\n")
 
     #
     # 処理対象脳領域ファイル一覧の生成
     #
-    folder <- VOL_DATA_OF_EACH_AREA_FLD_PATH
-    if(flagDebug==TRUE) cat("体積データフォルダ", folder, "\n")
-    children <- list.files(folder)
-    filtered_file_list <- c()
-    for( i in grep("\\.txt$", children)){
-        filtered_file_list <- c(filtered_file_list, children[i])
-    }
-    area_file_set <- filtered_file_list
+    #folder <- VOL_DATA_OF_EACH_AREA_FLD_PATH
+    #if(flagDebug==TRUE) cat("体積データフォルダ", folder, "\n")
+    #children <- list.files(folder)
+    #filtered_file_list <- c()
+    #for( i in grep("\\.txt$", children)){
+    #    filtered_file_list <- c(filtered_file_list, children[i])
+    #}
+    #area_file_set <- filtered_file_list
+    area_file_set <- colnames(df)[7:83]
     area_file_set <- sort(area_file_set, decreasing=TRUE) #ソート
     area_file_set_size <- length(area_file_set)
     if(flagDebug==TRUE) cat("The list of volume data file: ", "\n")
     if(flagDebug==TRUE) print(area_file_set)
-    #if(flagDebug==TRUE) cat("以上　", area_file_set_size, "個の脳領域ファイル\n\n")
+    if(flagDebug==TRUE) cat("以上　", area_file_set_size, "個の脳領域ファイル\n\n")
     if(flagDebug==TRUE) cat("The above is the list of ", area_file_set_size, " brain area files\n\n")
     if(flagDebug==TRUE) Sys.sleep(1)
 
@@ -118,17 +121,16 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     node_name_list <- c()
 
     cat("        Edge Values are creating ----- ")
-    area_file_set_size <- area_file_set_size
-    #area_file_set_size <- 10
+
     #area_file_set_size <- 5
     cat("area_file_set_size==", area_file_set_size, "-----")
-
     for( i in 1:area_file_set_size){
 
         # NodeNameに関する情報収集
         area1_file_name <- area_file_set[[i]]
-        area1_file_name_without_ext <- gsub("\\.[0-9A-Za-z]+$", "", area1_file_name) #拡張子除去
-        node_name_list <- c(node_name_list, area1_file_name_without_ext) # 脳領域名を集める
+        #area1_file_name_without_ext <- gsub("\\.[0-9A-Za-z]+$", "", area1_file_name) #拡張子除去
+        #node_name_list <- c(node_name_list, area1_file_name_without_ext) # 脳領域名を集める
+        node_name_list <- c(node_name_list, area1_file_name) # 脳領域名を集める
 
         for(j in 1:area_file_set_size){
 
