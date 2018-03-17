@@ -60,16 +60,14 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     cat("* function \"set_CorValList_and_NodeNameList()\" has started", "\n")
     source("AgeSexEffectRemover_v2.R")
 
-    #
-    # subject_names
-    #
-    #df <- read.table(DATA_ORDER_INFO, header=F, sep="", stringsAsFactors=TRUE)
-    #subject_names <- df[[1]]
     df <- read.table(paste(OUTPUT_PARENT_FLD_PATH_1, "df.txt", sep=""), header=T, sep="\t", stringsAsFactors=TRUE)
     #if(flagDebug==TRUE) cat("df:", "\n")
     #if(flagDebug==TRUE) print(df)
     #if(flagDebug==TRUE) cat("\n")
 
+    #
+    # subject_names
+    #
     subject_names <- df$ID
     subgroup_sbj_names <- subject_names[group_indexes]
     cat("subgroup_sbj_names:", "\n")
@@ -80,8 +78,6 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     #
     # eTIV
     #
-    #df <- read.table(ETIV_FILE_PATH, header=F, sep="", stringsAsFactors=TRUE)
-    #etiv <- df[[1]]
     etiv <- df$eTIV
     subgroup_etiv <- etiv[group_indexes]
     if(flagDebug==TRUE) cat("subgroup_etiv:", "\n    ")
@@ -89,9 +85,8 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     df_sbjname_etiv <- data.frame(GIVEN_ID=subgroup_sbj_names, TIV=subgroup_etiv)
 
     #
-    # 年齢と性別情報のロード
+    # 年齢と性別
     #
-    #df_sbjname_sex_age <- read.table(SBJECT_PROFILE_FILE_PATH, header=T, sep="\t", stringsAsFactors=TRUE)
     df_sbjname_sex_age <- data.frame(GIVEN_ID=df$ID, AGE=df$AGE, SEX=df$SEX)
     df_sbjname_etiv_sex_age <- merge(df_sbjname_etiv, df_sbjname_sex_age, all=FALSE)
     #if(flagDebug==TRUE) cat("df_sbjname_etiv_sex_age:", "\n")
@@ -99,23 +94,15 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
     #if(flagDebug==TRUE) cat("\n")
 
     #
-    # 処理対象脳領域ファイル一覧の生成
+    # 処理対象脳領域一覧の生成
     #
-    #folder <- VOL_DATA_OF_EACH_AREA_FLD_PATH
-    #if(flagDebug==TRUE) cat("体積データフォルダ", folder, "\n")
-    #children <- list.files(folder)
-    #filtered_file_list <- c()
-    #for( i in grep("\\.txt$", children)){
-    #    filtered_file_list <- c(filtered_file_list, children[i])
-    #}
-    #area_file_set <- filtered_file_list
     area_abbr_list <- colnames(df)[7:83]
     area_abbr_list <- sort(area_abbr_list, decreasing=TRUE) #ソート
     area_abbr_list_size <- length(area_abbr_list)
     if(flagDebug==TRUE) cat("The list of volume data file: ", "\n")
     if(flagDebug==TRUE) print(area_abbr_list)
-    if(flagDebug==TRUE) cat("以上　", area_abbr_list_size, "個の脳領域ファイル\n\n")
-    if(flagDebug==TRUE) cat("The above is the list of ", area_abbr_list_size, " brain area files\n\n")
+    if(flagDebug==TRUE) cat("以上　", area_abbr_list_size, "個の脳領域\n\n")
+    if(flagDebug==TRUE) cat("The above is the list of ", area_abbr_list_size, " brain area\n\n")
     if(flagDebug==TRUE) Sys.sleep(1)
 
     #
@@ -132,8 +119,6 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
 
         # NodeNameに関する情報収集
         area1_name <- area_abbr_list[[i]]
-        #area1_name_without_ext <- gsub("\\.[0-9A-Za-z]+$", "", area1_name) #拡張子除去
-        #node_name_list <- c(node_name_list, area1_name_without_ext) # 脳領域名を集める
         node_name_list <- c(node_name_list, area1_name) # 脳領域名を集める
 
         for(j in 1:area_abbr_list_size){
@@ -153,10 +138,8 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
             #
             # area1(i番目の脳領域)に関するロード
             #
-            #df <- read.table(paste(folder, area1_name, sep=""), header=F, sep="", stringsAsFactors=TRUE)
-            #area_i_vols_all <- df[[1]] #i番目の領域の全症例の体積データ
-            area_i_vols_all <- df[, i+6]
-            area_i_vols <- area_i_vols_all[group_indexes] #とある領域のGroupの体積データ
+            area_i_vols_all <- df[, i + 6] #i番目の領域の全症例の体積データ
+            area_i_vols <- area_i_vols_all[group_indexes] #i番目の領域のとある集団の体積データ
             if(flagDebug==TRUE) cat("area_i_vols:", "\n")
             if(flagDebug==TRUE) print(area_i_vols)
             if(flagDebug==TRUE) Sys.sleep(1)
@@ -164,10 +147,8 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
             #
             # area2(j番目の脳領域)に関するロード
             #
-            #df <- read.table(paste(folder, area2_name, sep=""), header=F, sep="", stringsAsFactors=TRUE)
-            #area_j_vols_all <- df[[1]] ##j番目の領域の全症例の体積データ
-            area_j_vols_all <- df[,j+6] ##j番目の領域の全症例の体積データ
-            area_j_vols <- area_j_vols_all[group_indexes] #とある領域のGroupの体積データ
+            area_j_vols_all <- df[,j+6] #j番目の領域の全症例の体積データ
+            area_j_vols <- area_j_vols_all[group_indexes] #j番目の領域のとある集団の体積データ
             if(flagDebug==TRUE) cat("area_j_vols:", "\n")
             if(flagDebug==TRUE) print(area_j_vols)
             if(flagDebug==TRUE) Sys.sleep(1)
@@ -177,8 +158,6 @@ set_CorValList_and_NodeNameList <- function(group_indexes, flagDebug=FALSE, p_va
             # i番目とj番目の脳領域情報を保持するデータフレーム生成
             # この段階で各脳領域体積はeTIVで補正しておく
             #
-            #df_sbjname_ivol_jvol <- data.frame(GIVEN_ID=subgroup_sbj_names, I_VOL=area_i_vols, J_VOL=area_j_vols)
-            #df_sbjname_ivol_jvol <- data.frame(GIVEN_ID=subgroup_sbj_names, I_VOL_ADJ=area_i_vols/subgroup_etiv, J_VOL_ADJ=area_j_vols/subgroup_etiv)
             df_sbjname_ivol_jvol <- data.frame(GIVEN_ID=subgroup_sbj_names, I_VOL_ADJ=area_i_vols/subgroup_etiv, J_VOL_ADJ=area_j_vols/subgroup_etiv)
             if(flagDebug==TRUE) cat("df_sbjname_ivol_jvol:", "\n")
             if(flagDebug==TRUE) print(df_sbjname_ivol_jvol)
